@@ -1,6 +1,8 @@
-// $warm: #383735;
-// $blue: #3847b8;
-// $grey: #c5cad6;
+$light: #F4F6F6;
+$red-light: #FF9C91;
+$red: #CD3F3E;
+$dark: #1C2938;
+
 
 $tiny: 380px;
 $wrap-break: 768px;
@@ -23,7 +25,7 @@ body {
     left: 0;
     margin: 0;
     padding: 0;
-    background-color: $grey;
+    background-color: $light;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -53,17 +55,26 @@ body {
 
 .header-container {
     @include horizontal-center;
-    background-color: $warm;
-    color: $grey;
+    background-color: $dark;
+    color: $light;
 }
 
 .header-item {
     margin: 1vh 2vw;
     font-size: 1rem;
     text-decoration: none;
-    color: $grey;
+    color: $red-light;
 }
 
 .header-item:hover {
-    color: $blue;
+    color: $red;
+}
+
+/////////////////////////////////////////////////////////////
+//////      Main
+/////////////////////////////////////////////////////////////
+
+.current-time {
+    font-size: 1.5rem;
+    color: $dark;
 }

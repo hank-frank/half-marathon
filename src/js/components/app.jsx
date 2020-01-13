@@ -1,16 +1,13 @@
-import React from 'react';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
+import Header from './Header.jsx'
+import Main from './Main.jsx';
 
 function App() {
     return (
         <>
-            <Router>
             <Header />
-                <Route exact path="/">
-                    {/* <Input /> ROute goes here */}
-                </Route>
-            </Router>
+            <Main />
         </>
     )
 };
