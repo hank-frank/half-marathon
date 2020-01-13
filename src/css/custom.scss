@@ -1,0 +1,69 @@
+// $warm: #383735;
+// $blue: #3847b8;
+// $grey: #c5cad6;
+
+$tiny: 380px;
+$wrap-break: 768px;
+
+@mixin mobile {
+    @media (max-width: $wrap-break) {
+        @content;
+    }
+}
+
+@mixin tiny {
+    @media (max-width: $tiny) {
+        @content;
+    }
+}
+
+body {
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    background-color: $grey;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@mixin horizontal-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+@mixin vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.centered-horizontal {
+    @include horizontal-center;
+}
+
+.centered-vertical {
+    @include vertical-center;
+}
+
+/////////////////////////////////////////////////////////////
+//////      Header
+/////////////////////////////////////////////////////////////
+
+.header-container {
+    @include horizontal-center;
+    background-color: $warm;
+    color: $grey;
+}
+
+.header-item {
+    margin: 1vh 2vw;
+    font-size: 1rem;
+    text-decoration: none;
+    color: $grey;
+}
+
+.header-item:hover {
+    color: $blue;
+}
