@@ -6,8 +6,10 @@ import Now from './Now.jsx';
 let novice2 = require('../../training/novice2.json');
 
 function Main() {
-    let [startDate, setStartDate] = useState(new Date('January 08, 2020 00:01:00'));
-    let [currentWeek, setCurrentWeek] = useState(0);
+    const [startDate, setStartDate] = useState(new Date('January 01, 2020 00:01:00'));
+    const [currentWeek, setCurrentWeek] = useState(1);
+    const [viewWeek, setViewWeek] = useState(1);
+    const [trainingInfo, setTrainingInfo] = useState(novice2);
 
     useEffect(() => {
         findWeek();
@@ -19,17 +21,39 @@ function Main() {
         diff /= (60 * 60 * 24 * 7);
         let weekAfterStart = Math.abs(Math.round(diff));
         setCurrentWeek(weekAfterStart);
-        console.log(`week from findWeek: `, weekAfterStart);
     };
+
+    const lastWeek = () => {
+        console.log(`viewWeek: `, viewWeek)
+        if (viewWeek > 1) {
+            setViewWeek(viewWeek-1)
+        }
+    }
+
+    const nextWeek = () => {
+        console.log(`viewWeek: `, viewWeek);
+        let numberOfWeeks = trainingInfo.length;
+        if (viewWeek < numberOfWeeks) {
+            setViewWeek(viewWeek+1)
+        }
+    }
 
     return (
         <>
             <Now />
             <div className='centered-horizontal'> 
-                <h6 className="time-label">It is week: {currentWeek}</h6>
+                <h6 className="time-label">It is week: { currentWeek }</h6>
+            </div>
+            <div className='centered-horizontal'> 
+                <h6 className="time-label">Currently viewing week: { viewWeek }</h6>
+            </div>
+            <div className="button-container">
+                <button id="last-week" onClick={ lastWeek }>Last</button>
+                <button id="next-week" onClick={ nextWeek }>Next</button>
             </div>
             <EachWeek 
-                weekIndex = { currentWeek }
+                trainingInfo = { trainingInfo }
+                week = { viewWeek }
             />
         </>
     )

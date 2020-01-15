@@ -2,7 +2,8 @@ $light: #F4F6F6;
 $red-light: #FF9C91;
 $red: #CD3F3E;
 $dark: #1C2938;
-
+$green: #8ECC69;
+$dkgreen: #78B74F;
 
 $tiny: 380px;
 $wrap-break: 768px;
@@ -84,4 +85,166 @@ body {
     font-size: 1.5rem;
     color: $dark;
     margin: 1vh 0;
+}
+
+.button-container {
+    display: flex; 
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#last-week {
+    width: 100px;
+    height: 60px;
+    background-color: $dark;
+    border: 3px solid $light;
+    color: $light;
+}
+
+#next-week {
+    width: 100px;
+    height: 60px;
+    background-color: $dark;
+    border: 3px solid $light;
+    color: $light;
+}
+
+/////////////////////////////////////////////////////////////
+//////      EachWeek
+/////////////////////////////////////////////////////////////
+
+.runs-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.runs-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 0 10%;
+}
+
+.run-border-complete{
+    border: 3px $green solid;
+    background-color: $dkgreen;
+    color: $light;
+    width: 100%;
+    height: 60px;
+    @include vertical-center;
+}
+
+.run-border-not {
+    border: 3px $red-light solid;
+    background-color: $red;
+    color: $light;
+    width: 100%;
+    height: 60px;
+    @include vertical-center;
+}
+
+.miles-text {
+    font-size: 1.5rem;
+    margin: 0 2vw;
+}
+
+.center-run-text {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.switch-spacer {
+    margin: 0 2vw;
+    @include vertical-center;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 17px;
+    margin-bottom: 1vh;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $red-light;
+    -webkit-transition: .2s;
+    transition: .2s;
+
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    background-color: $red;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+input:checked + .slider {
+    background-color: $red-light;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px $red-light;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(13px);
+    -ms-transform: translateX(13px);
+    transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.progress-wrapper {
+    margin: 2vh 5vw;
+}
+
+.runs-bar {
+    width: 100%;
+    height: 80px;
+    border: 3px solid $red-light;
+}
+
+.runs-progress {
+    height: 80px;
+    background-color: $red;
+}
+
+.miles-bar {
+    width: 100%;
+    height: 80px;
+    border: 3px solid $red-light;
+}
+
+.miles-progress {
+    height: 80px;
+    background-color: $red;
 }
