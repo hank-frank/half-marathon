@@ -182,7 +182,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: $red-light;
+    background-color: $light;
     -webkit-transition: .2s;
     transition: .2s;
 
@@ -195,17 +195,17 @@ body {
     width: 13px;
     left: 2px;
     bottom: 2px;
-    background-color: $red;
+    background-color: $dark;
     -webkit-transition: .2s;
     transition: .2s;
 }
 
 input:checked + .slider {
-    background-color: $red-light;
+    background-color: $light;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px $red-light;
+    box-shadow: 0 0 1px $light;
 }
 
 input:checked + .slider:before {

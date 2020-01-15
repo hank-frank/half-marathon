@@ -32,12 +32,16 @@ function EachWeek(props) {
             }
 
         })
-        setSchedule(temp);
         let runsPercent = (runsDone / runsPossible).toFixed(2) * 100;
         let milesPercent = (milesDone / milesPossible).toFixed(2) * 100;
-
+        
         setMilesProgress(milesPercent);
         setRunsProgress(runsPercent);
+        temp[thisWeek-1].runsProgress = runsPercent;
+        temp[thisWeek-1].milesProgress = milesPercent;
+        console.log(`temp runsProgress`, temp[thisWeek-1].runsProgress);
+        console.log(`runsPercent: `, runsPercent)
+        setSchedule(temp);
         
     };
 
@@ -87,12 +91,12 @@ function EachWeek(props) {
         </div>
         <div className="progress-wrapper">
             <div className="runs-bar">
-                <div className="runs-progress" style={{width: `${runsProgress}%`}}></div>
+                <div className="runs-progress" style={{width: `${schedule[thisWeek-1].runsProgress}%`}}></div>
             </div>
         </div>
         <div className="progress-wrapper">
             <div className="miles-bar">
-                <div className="miles-progress" style={{width: `${milesProgress}%`}}></div>
+                <div className="miles-progress" style={{width: `${schedule[thisWeek-1].milesProgress}%`}}></div>
             </div>
         </div>
         <button onClick={ () => testing() }>Testing</button>

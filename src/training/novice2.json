@@ -2,6 +2,8 @@
     {
         "week": 1,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -28,6 +30,8 @@
     {
         "week": 2,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -54,6 +58,8 @@
     {
         "week": 3,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -80,6 +86,8 @@
     {
         "week": 4,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -106,6 +114,8 @@
     {
         "week": 5,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -132,6 +142,8 @@
     {
         "week": 6,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -158,6 +170,8 @@
     {
         "week": 7,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -184,6 +198,8 @@
     {
         "week": 8,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -210,6 +226,8 @@
     {
         "week": 9,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -236,6 +254,8 @@
     {
         "week": 10,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -262,6 +282,8 @@
     {
         "week": 11,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
@@ -288,6 +310,8 @@
     {
         "week": 12,
         "complete": false,
+        "milesProgress": 0,
+        "runsProgress": 0, 
         "runs": [
             {
                 "runId": 1,
