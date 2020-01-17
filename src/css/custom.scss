@@ -236,6 +236,7 @@ input:checked + .slider:before {
 .runs-progress {
     height: 80px;
     background-color: $red;
+    // transition: .2s;
 }
 
 .miles-bar {
@@ -247,4 +248,5 @@ input:checked + .slider:before {
 .miles-progress {
     height: 80px;
     background-color: $red;
+    // transition: .2s;
 }

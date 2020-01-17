@@ -24,14 +24,12 @@ function Main() {
     };
 
     const lastWeek = () => {
-        console.log(`viewWeek: `, viewWeek)
         if (viewWeek > 1) {
             setViewWeek(viewWeek-1)
         }
     }
 
     const nextWeek = () => {
-        console.log(`viewWeek: `, viewWeek);
         let numberOfWeeks = trainingInfo.length;
         if (viewWeek < numberOfWeeks) {
             setViewWeek(viewWeek+1)
