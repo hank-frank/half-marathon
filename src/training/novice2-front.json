@@ -1,5 +1,4 @@
-{   "name": "henry",
-    "schedule": [
+[
     {
         "week": 1,
         "complete": false,
@@ -336,4 +335,4 @@
             }
         ]
     }
-]}
+]

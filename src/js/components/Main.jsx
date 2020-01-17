@@ -3,16 +3,35 @@ import React, { useState, useEffect } from 'react';
 import EachWeek from './eachWeek.jsx';
 import Now from './Now.jsx';
 
-let novice2 = require('../../training/novice2.json');
+let novice2 = require('../../training/novice2-front.json');
 
 function Main() {
     const [startDate, setStartDate] = useState(new Date('January 01, 2020 00:01:00'));
     const [currentWeek, setCurrentWeek] = useState(1);
     const [viewWeek, setViewWeek] = useState(1);
     const [trainingInfo, setTrainingInfo] = useState(novice2);
+    const [trainingInfo2, setTrainingInfo2] = useState();
 
     useEffect(() => {
         findWeek();
+        fetch('/training')
+            .then((response) => {
+                // console.log(`response: `, response.json());
+                return response.json();
+            })
+            .then((data) => {
+                setTrainingInfo2(data);
+                console.log("Done: ", data);
+            })
+            .catch((err) => {
+                console.log(`Error: `, err)
+            })
+
+
+            return function cleanup(trainingInfo2) {
+                //this will handle the cleanup and send back of the object
+
+            };
     }, [])
 
     let findWeek = () => {
@@ -36,8 +55,15 @@ function Main() {
         }
     }
 
+    const tester = () => {
+        let data = trainingInfo2;
+        console.log(`trainingInfo2: `, data);
+        console.log("testing");
+    }
+
     return (
         <>
+            <button onClick={ () => tester() }>Test</button>
             <Now />
             <div className='centered-horizontal'> 
                 <h6 className="time-label">It is week: { currentWeek }</h6>
