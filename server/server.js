@@ -1,12 +1,29 @@
 const express = require('express');
 const axios = require('axios');
 const morgan = require("morgan");
+const bodyParser = require('body-parser');
+
+const app = express();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 // const dotenv = require("dotenv");
 // dotenv.config();
 
 const novice2 = require('../src/training/novice2.json');
 
-const app = express();
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    );
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+        return res.status(200).json({});
+    }
+    next();
+});
 
 // app.use(morgan("dev"));
 app.use(express.static('dist'));
@@ -60,14 +77,14 @@ app.get('/training', (req, res) => {
         // }) 
 
         //fine specific one
-        col.find({}, { projection: {schedule: 1, name: 1}}).toArray(function(err, result) {
+        col.find({name: 'henry'}, { projection: {schedule: 1, name: 1}}).toArray(function(err, result) {
             if (err) throw err;
-            console.log(`result of find: `, result);
+            // console.log(`result of find: `, result);
             //sending results array not individual result. need to whittle down to that. 
             res.send(result);
         })
 
-        client.close();
+        // client.close();
     })
 
     // (async function() {
@@ -89,6 +106,14 @@ app.get('/training', (req, res) => {
     //         console.log(err.stack);
     //         }
     //     })();
+})
+
+//not working
+app.post('/cleanup', (req, res) => {
+    console.log(`request: `, req.body);
+    // res.send(`Post received: `, req.body);
+    
+        // res.status(204).send(req.body);
 })
 
 

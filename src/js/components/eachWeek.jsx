@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 function EachWeek(props) {
     const [thisWeek, setThisWeek] = useState(1);
     const [schedule, setSchedule] = useState(props.trainingInfo);
-    const [testState, setTestState] = useState(false);
+    // const [testState, setTestState] = useState(false);
     const [milesProgress, setMilesProgress] = useState(0);
     const [runsProgress, setRunsProgress] = useState(0);
 
@@ -47,7 +47,7 @@ function EachWeek(props) {
 
     const testing = () => {
         
-        setTestState(!testState);
+        // setTestState(!testState);
     }
 
     return (

@@ -28,10 +28,22 @@ function Main() {
             })
 
 
-            return function cleanup(trainingInfo2) {
-                //this will handle the cleanup and send back of the object
+            // return function cleanup(trainingInfo2) {
+            //     (async () => {
+            //         const rawResponse = await fetch('/cleanup', {
+            //             method: 'POST',
+            //             headers: {
+            //             'Accept': 'application/json',
+            //             'Content-Type': 'application/json'
+            //             },
+            //             body: JSON.stringify({trainingInfo2})
+            //         });
+            //         const content = await rawResponse.json();
+                    
+            //         console.log(`response of post: `, content);
+            //     })();
+            // };
 
-            };
     }, [])
 
     let findWeek = () => {
@@ -56,14 +68,28 @@ function Main() {
     }
 
     const tester = () => {
-        let data = trainingInfo2;
-        console.log(`trainingInfo2: `, data);
-        console.log("testing");
+        // let data = trainingInfo2;
+        // console.log(`trainingInfo2: `, data);
+        // console.log("testing");
+
+        
+        fetch('/cleanup', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({trainingInfo2})
+        })
+        .then(res=>res.json())
+        .then(res => console.log(`response from Post on front: `, res));
+        
+    
     }
 
     return (
         <>
-            <button onClick={ () => tester() }>Test</button>
+            <button onClick={ () => tester() }>Testing</button>
             <Now />
             <div className='centered-horizontal'> 
                 <h6 className="time-label">It is week: { currentWeek }</h6>
