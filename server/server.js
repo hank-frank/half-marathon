@@ -59,8 +59,6 @@ const client = new MongoClient(url);
 // });
 
 app.get('/training', (req, res) => {
-    
-
     client.connect(function(err, client) {
         assert.equal(null, err);
         console.log("Connected correctly to server");
@@ -82,38 +80,36 @@ app.get('/training', (req, res) => {
             // console.log(`result of find: `, result);
             //sending results array not individual result. need to whittle down to that. 
             res.send(result);
+            // closeDB();
         })
-
-        // client.close();
+        let closeDB = () => {
+            client.close();
+        }
     })
-
-    // (async function() {
-    //     try {
-    //         await client.connect();
-    //         console.log("Connected correctly to server");
-    //         const db = client.db(dbName);
-        
-    //         // Get the collection
-    //         const col = db.collection('schedules');
-            
-    //         // Get first two documents that match the query
-    //         const docs = await col.findOne({});
-    //         console.log(`found it: `, docs);
-        
-    //         // Close connection
-    //         client.close();
-    //         } catch(err) {
-    //         console.log(err.stack);
-    //         }
-    //     })();
 })
 
 //not working
 app.post('/cleanup', (req, res) => {
-    console.log(`request: `, req.body);
-    // res.send(`Post received: `, req.body);
+    console.log("calling route /cleanup")
+    console.log(`request in cleanup: `, req.body.data);
+    const userData = req.body.data;
     
-        // res.status(204).send(req.body);
+    
+        const db = client.db(dbName);
+        const col = db.collection('schedules');
+
+        let myquery = { _id: userData._id };
+        let newValues = { $set: {scuedule: userData.schedule } };
+        
+        col.updateOne(myquery, newValues, function(err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            //res.send(200)
+            closeDB();
+        });
+        let closeDB = () => {
+            client.close();
+        }
 })
 
 

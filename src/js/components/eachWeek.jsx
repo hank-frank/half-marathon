@@ -11,7 +11,7 @@ function EachWeek(props) {
     useEffect(() => {
         setThisWeek(props.week);        
     }, [props])
-
+    //this needs to be moved into parent component. 
     const checkToggle = (id) => {
         
         let temp = schedule;
@@ -99,7 +99,7 @@ function EachWeek(props) {
                 <div className="miles-progress" style={{width: `${schedule[thisWeek-1].milesProgress}%`}}></div>
             </div>
         </div>
-        <button onClick={ () => testing() }>Testing</button>
+        <button onClick={ () => testing() }>each week Testing</button>
         </>
     )
 };

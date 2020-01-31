@@ -16,7 +16,6 @@ function Main() {
         findWeek();
         fetch('/training')
             .then((response) => {
-                // console.log(`response: `, response.json());
                 return response.json();
             })
             .then((data) => {
@@ -27,23 +26,19 @@ function Main() {
                 console.log(`Error: `, err)
             })
 
-
-            // return function cleanup(trainingInfo2) {
-            //     (async () => {
-            //         const rawResponse = await fetch('/cleanup', {
-            //             method: 'POST',
-            //             headers: {
-            //             'Accept': 'application/json',
-            //             'Content-Type': 'application/json'
-            //             },
-            //             body: JSON.stringify({trainingInfo2})
-            //         });
-            //         const content = await rawResponse.json();
-                    
-            //         console.log(`response of post: `, content);
-            //     })();
-            // };
-
+            //cleanup funciton from useeffect, runs as component will unmount
+            return () => {
+                fetch('/cleanup', {
+                    method: 'post',
+                    headers: {
+                      'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({data})
+                })
+                .then(res=>res.json())
+                .then(res => console.log(`response from Post on front: `, res));
+            };
     }, [])
 
     let findWeek = () => {
@@ -52,6 +47,7 @@ function Main() {
         diff /= (60 * 60 * 24 * 7);
         let weekAfterStart = Math.abs(Math.round(diff));
         setCurrentWeek(weekAfterStart);
+        setViewWeek(weekAfterStart);
     };
 
     const lastWeek = () => {
@@ -68,23 +64,19 @@ function Main() {
     }
 
     const tester = () => {
-        // let data = trainingInfo2;
-        // console.log(`trainingInfo2: `, data);
-        // console.log("testing");
+        let data = trainingInfo2;
+        console.log(`trainingInfo2 from tester: `, data);
 
-        
         fetch('/cleanup', {
             method: 'post',
             headers: {
               'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({trainingInfo2})
+            body: JSON.stringify({data})
         })
         .then(res=>res.json())
         .then(res => console.log(`response from Post on front: `, res));
-        
-    
     }
 
     return (
