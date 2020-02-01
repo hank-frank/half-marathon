@@ -14,7 +14,7 @@ function Main() {
 
     useEffect(() => {
         findWeek();
-        fetch('/training')
+        fetch('/getSchedule')
             .then((response) => {
                 return response.json();
             })
@@ -28,6 +28,7 @@ function Main() {
 
             //cleanup funciton from useeffect, runs as component will unmount
             return () => {
+                console.log("calling cleanup from useeffect");
                 fetch('/cleanup', {
                     method: 'post',
                     headers: {

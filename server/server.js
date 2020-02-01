@@ -30,17 +30,10 @@ app.use(express.static('dist'));
 
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
-
-// Connection URL
 const url = 'mongodb://localhost:27017';
-
-// Database Name
 const dbName = 'half-marathon';
-
 // Create a new MongoClient
-const client = new MongoClient(url);
-
-// Use connect method to connect to the Server
+const client = new MongoClient(url, { useUnifiedTopology: true });
 
 //inserts initial DB w/ "name": "henry"
 // client.connect(function(err) {
@@ -58,23 +51,21 @@ const client = new MongoClient(url);
 //     client.close();
 // });
 
-app.get('/training', (req, res) => {
+app.get('/getSchedule', (req, res) => {
     client.connect(function(err, client) {
         assert.equal(null, err);
         console.log("Connected correctly to server");
 
         const db = client.db(dbName);
-
         const col = db.collection('schedules');
 
         //finds first one
         // col.findOne({}, function(err, results) {
         //     if (err) throw err;
         //     console.log(results);
-            
         // }) 
 
-        //fine specific one
+        //fine specific one     can eventually be used to search by username
         col.find({name: 'henry'}, { projection: {schedule: 1, name: 1}}).toArray(function(err, result) {
             if (err) throw err;
             // console.log(`result of find: `, result);
@@ -82,9 +73,6 @@ app.get('/training', (req, res) => {
             res.send(result);
             // closeDB();
         })
-        let closeDB = () => {
-            client.close();
-        }
     })
 })
 
@@ -95,21 +83,19 @@ app.post('/cleanup', (req, res) => {
     const userData = req.body.data;
     
     
-        const db = client.db(dbName);
-        const col = db.collection('schedules');
+    const db = client.db(dbName);
+    const col = db.collection('schedules');
 
-        let myquery = { _id: userData._id };
-        let newValues = { $set: {scuedule: userData.schedule } };
+    let myquery = { _id: userData._id };
+    let newValues = { $set: {scuedule: userData.schedule } };
+    
+    col.updateOne(myquery, newValues, function(err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+        //res.send(200)
         
-        col.updateOne(myquery, newValues, function(err, res) {
-            if (err) throw err;
-            console.log("1 document updated");
-            //res.send(200)
-            closeDB();
-        });
-        let closeDB = () => {
-            client.close();
-        }
+    });
+    client.close()
 })
 
 
