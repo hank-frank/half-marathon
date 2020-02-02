@@ -65,43 +65,42 @@ app.get('/getSchedule', (req, res) => {
         //     console.log(results);
         // }) 
 
-        //fine specific one     can eventually be used to search by username
+        //find specific one currently hard coded to find my name     can eventually be used to search by username
         col.find({name: 'henry'}, { projection: {schedule: 1, name: 1}}).toArray(function(err, result) {
             if (err) throw err;
-            // console.log(`result of find: `, result);
-            //sending results array not individual result. need to whittle down to that. 
-            res.send(result[0]);
+            console.log(`result of find: `, result);
+            res.status(200).send(result[0]);
+            // client.close();
         });
 
-        // client.close();
     })
 })
 
-//not working
 app.post('/cleanup', (req, res) => {
     console.log("calling route /cleanup")
     console.log(`request in cleanup: `, req.body.trainingInfo);
-    const userData = req.body.trainingIngo;
+    const userData = req.body.trainingInfo;
 
-    // client.connect(function(err, client) {
-    //     assert.equal(null, err);
-    //     console.log("Connected correctly to server");
+    client.connect(function(err, client) {
+        assert.equal(null, err);
+        console.log("Connected correctly to server");
 
         const db = client.db(dbName);
         const col = db.collection('schedules');
 
-        let myquery = { _id: userData._id };
-        let newValues = { $set: {scuedule: userData } };
+        let myquery = { name: userData.name };
+        let newValues = { $set: {schedule: userData.schedule } };
     
         col.updateOne(myquery, newValues, function(err, res) {
             if (err) throw err;
-            console.log("1 document updated");
+            // console.log("1 document updated - just consolelog not real confirmation");
+            console.log(`res in update: `, res.result);
             //res.send(200)
             
+            client.close();
         });
+    });
 
-        // client.close();
-    // })
 })
 
 

@@ -54,13 +54,17 @@ function EachWeek(props) {
             </div>
         </div>
         <div className="progress-wrapper">
-            <div className="runs-bar">
-                <div className="runs-progress" style={{width: `${schedule[thisWeek-1]?.runsProgress}%`}}></div>
+            <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "bar-done" : "runs-bar" }>
+                <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "progress-done" : "runs-progress" } style={{width: `${schedule[thisWeek-1]?.runsProgress}%`}}>
+                    <p className={ schedule[thisWeek-1]?.runsProgress > 15 ? "progress-text" : "no-show" }>Runs done</p>
+                </div>
             </div>
         </div>
         <div className="progress-wrapper">
-            <div className="miles-bar">
-                <div className="miles-progress" style={{width: `${schedule[thisWeek-1]?.milesProgress}%`}}></div>
+            <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "bar-done" : "runs-bar" }>
+                <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "progress-done" : "miles-progress" } style={{width: `${schedule[thisWeek-1]?.milesProgress}%`}}>
+                <p className={ schedule[thisWeek-1]?.runsProgress > 15 ? "progress-text" : "no-show" }>Miles done</p>
+                </div>
             </div>
         </div>
         <button onClick={ testing }>each week Testing</button>

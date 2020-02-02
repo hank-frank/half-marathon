@@ -21,6 +21,7 @@ function Main() {
 
     useEffect(() => {
         findWeek();
+
         fetch('/getSchedule')
             .then((response) => {
                 return response.json();
@@ -34,7 +35,7 @@ function Main() {
                 console.log(`Error: `, err)
             })
 
-            //cleanup funciton from useeffect, runs as component will unmount
+            //cleanup funciton from useeffect, supposed to run as componentWillUnmount
             // return () => {
             //     console.log("calling cleanup from useeffect");
             //     fetch('/cleanup', {
@@ -48,6 +49,9 @@ function Main() {
             //     .then(res=>res.json())
             //     .then(res => console.log(`response from Post on front: `, res));
             // };
+            return () => {
+                console.log("calling cleanup")
+            }
     }, [])
 
     let findWeek = () => {
@@ -105,20 +109,17 @@ function Main() {
 
     const tester = () => {
         console.log(`trainingInfo: `, trainingInfo);
-        console.log(`trainingInfo2: `, trainingInfo2);
-        // // let data = trainingInfo;
-        // console.log(`trainingInfo2 from tester: `, trainingInfo2);
 
-        // fetch('/cleanup', {
-        //     method: 'post',
-        //     headers: {
-        //       'Accept': 'application/json, text/plain, */*',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ trainingInfo2 })
-        // })
-        // .then(res=>res.json())
-        // .then(res => console.log(`response from Post on front: `, res));
+        fetch('/cleanup', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ trainingInfo })
+        })
+        .then(res=>res.json())
+        .then(res => console.log(`response from Post on front: `, res));
     }
 
     return (

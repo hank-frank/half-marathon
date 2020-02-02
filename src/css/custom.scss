@@ -99,6 +99,7 @@ body {
     background-color: $dark;
     border: 3px solid $light;
     color: $light;
+    font-size: 1rem;
 }
 
 #next-week {
@@ -107,6 +108,7 @@ body {
     background-color: $dark;
     border: 3px solid $light;
     color: $light;
+    font-size: 1rem;
 }
 
 /////////////////////////////////////////////////////////////
@@ -233,10 +235,17 @@ input:checked + .slider:before {
     border: 3px solid $red-light;
 }
 
+.bar-done {
+    width: 100%;
+    height: 80px;
+    border: 3px solid $green;
+}
+
 .runs-progress {
     height: 80px;
     background-color: $red;
-    // transition: .2s;
+    transition: .2s;
+    @include vertical-center;
 }
 
 .miles-bar {
@@ -248,5 +257,23 @@ input:checked + .slider:before {
 .miles-progress {
     height: 80px;
     background-color: $red;
-    // transition: .2s;
+    transition: .2s;
+    @include vertical-center;
+}
+
+.progress-done {
+    height: 80px;
+    background-color: $dkgreen;
+    transition: .2s;
+    @include vertical-center;
+}
+
+.progress-text {
+    color: white;
+    font-size: 1rem;
+    margin-left: 3vw;
+}
+
+.no-show {
+    display: none;
 }
