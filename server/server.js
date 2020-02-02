@@ -35,7 +35,7 @@ const dbName = 'half-marathon';
 // Create a new MongoClient
 const client = new MongoClient(url, { useUnifiedTopology: true });
 
-//inserts initial DB w/ "name": "henry"
+//inserts initial DB entry in 'schedules' w/ "name": "henry"
 // client.connect(function(err) {
 //     assert.equal(null, err);
 //     console.log("Connected successfully to server");
@@ -70,32 +70,38 @@ app.get('/getSchedule', (req, res) => {
             if (err) throw err;
             // console.log(`result of find: `, result);
             //sending results array not individual result. need to whittle down to that. 
-            res.send(result);
-            // closeDB();
-        })
+            res.send(result[0]);
+        });
+
+        // client.close();
     })
 })
 
 //not working
 app.post('/cleanup', (req, res) => {
     console.log("calling route /cleanup")
-    console.log(`request in cleanup: `, req.body.data);
-    const userData = req.body.data;
-    
-    
-    const db = client.db(dbName);
-    const col = db.collection('schedules');
+    console.log(`request in cleanup: `, req.body.trainingInfo);
+    const userData = req.body.trainingIngo;
 
-    let myquery = { _id: userData._id };
-    let newValues = { $set: {scuedule: userData.schedule } };
+    // client.connect(function(err, client) {
+    //     assert.equal(null, err);
+    //     console.log("Connected correctly to server");
+
+        const db = client.db(dbName);
+        const col = db.collection('schedules');
+
+        let myquery = { _id: userData._id };
+        let newValues = { $set: {scuedule: userData } };
     
-    col.updateOne(myquery, newValues, function(err, res) {
-        if (err) throw err;
-        console.log("1 document updated");
-        //res.send(200)
-        
-    });
-    client.close()
+        col.updateOne(myquery, newValues, function(err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            //res.send(200)
+            
+        });
+
+        // client.close();
+    // })
 })
 
 

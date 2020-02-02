@@ -4,50 +4,14 @@ import React, { useState, useEffect } from 'react';
 function EachWeek(props) {
     const [thisWeek, setThisWeek] = useState(1);
     const [schedule, setSchedule] = useState(props.trainingInfo);
-    // const [testState, setTestState] = useState(false);
-    const [milesProgress, setMilesProgress] = useState(0);
-    const [runsProgress, setRunsProgress] = useState(0);
 
     useEffect(() => {
-        setThisWeek(props.week);        
-    }, [props])
-    //this needs to be moved into parent component. 
-    const checkToggle = (id) => {
-        
-        let temp = schedule;
-        let milesPossible = 0;
-        let milesDone = 0;
-        let runsPossible = temp[thisWeek-1].runs.length;
-        let runsDone = 0;
-
-        temp[thisWeek-1].runs.forEach((run) => {
-            milesPossible += run.miles;
-            
-            if (id === run.runId) {
-                run.complete = !run.complete
-            }
-            if (run.complete === true) {
-                runsDone++
-                milesDone+= run.miles;
-            }
-
-        })
-        let runsPercent = (runsDone / runsPossible).toFixed(2) * 100;
-        let milesPercent = (milesDone / milesPossible).toFixed(2) * 100;
-        
-        setMilesProgress(milesPercent);
-        setRunsProgress(runsPercent);
-        temp[thisWeek-1].runsProgress = runsPercent;
-        temp[thisWeek-1].milesProgress = milesPercent;
-        console.log(`temp runsProgress`, temp[thisWeek-1].runsProgress);
-        console.log(`runsPercent: `, runsPercent)
-        setSchedule(temp);
-        
-    };
+        setThisWeek(props.week);
+        setSchedule(props.trainingInfo)        
+    }, [props]);
 
     const testing = () => {
-        
-        // setTestState(!testState);
+        console.log(schedule);
     }
 
     return (
@@ -55,14 +19,14 @@ function EachWeek(props) {
         <div className="runs-center">
             <div className="runs-wrapper">
                 {   
-                    schedule[thisWeek-1].runs.map((run) => {
+                    schedule[thisWeek-1]?.runs.map((run) => {
                         if (run.complete == true) {
                             return (
                                 <div className="run-border-complete" key={ run.runId }>
                                     <div className='center-run-text'>
                                         <div className="switch-spacer">
                                             <label className="toggle-switch">
-                                                <input type="checkbox"  onChange={ () => checkToggle(run.runId) } checked={ run.complete }/>
+                                                <input type="checkbox"  onChange={ () => props.checkToggle(run.runId) } checked={ run.complete }/>
                                                 <span className="slider round"></span>
                                             </label>
                                         </div>
@@ -76,7 +40,7 @@ function EachWeek(props) {
                                     <div className='center-run-text'>
                                         <div className="switch-spacer">
                                             <label className="toggle-switch">
-                                                <input type="checkbox"  onChange={ () => checkToggle(run.runId) } checked={ run.complete }/>
+                                                <input type="checkbox"  onChange={ () => props.checkToggle(run.runId) } checked={ run.complete }/>
                                                 <span className="slider round"></span>
                                             </label>
                                         </div>
@@ -91,15 +55,15 @@ function EachWeek(props) {
         </div>
         <div className="progress-wrapper">
             <div className="runs-bar">
-                <div className="runs-progress" style={{width: `${schedule[thisWeek-1].runsProgress}%`}}></div>
+                <div className="runs-progress" style={{width: `${schedule[thisWeek-1]?.runsProgress}%`}}></div>
             </div>
         </div>
         <div className="progress-wrapper">
             <div className="miles-bar">
-                <div className="miles-progress" style={{width: `${schedule[thisWeek-1].milesProgress}%`}}></div>
+                <div className="miles-progress" style={{width: `${schedule[thisWeek-1]?.milesProgress}%`}}></div>
             </div>
         </div>
-        <button onClick={ () => testing() }>each week Testing</button>
+        <button onClick={ testing }>each week Testing</button>
         </>
     )
 };
