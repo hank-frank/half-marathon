@@ -30,7 +30,10 @@ function App() {
             body: JSON.stringify({ user, pass })
         })
         .then(res=>res.json())
-        .then(res => console.log(`response from Post on front: `, res));
+        .then(res => {
+            console.log(`response from Post on front: `, res.authorized);
+            res.authorized ? setIsAuthenticated(true) : setIsAuthenticated(false);
+        });
     };
 
     const handleTitle = (hash) => {
@@ -53,6 +56,10 @@ function App() {
         };
     }
 
+    const testbutton = () => {
+        console.log(`auth: `, isAuthenticated)
+    }
+
     return (
         <>
             <Router>
@@ -60,6 +67,7 @@ function App() {
                     <title>{ helmetTitle }</title>
                 </Helmet>
                 <Header />
+                <button onClick={testbutton}>TestButton from app</button>
                 <main id="page-container">
                     <Route path='/Main' component={ Main }/>
                     <Route path='/Login' render={() =>  <Login loginSubmit ={ loginSubmit } />}/>
