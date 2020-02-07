@@ -34,22 +34,9 @@ function Main() {
                 console.log(`Error: `, err)
             })
 
-            //cleanup funciton from useeffect, supposed to run as componentWillUnmount
-            // return () => {
-            //     console.log("calling cleanup from useeffect");
-            //     fetch('/cleanup', {
-            //         method: 'post',
-            //         headers: {
-            //           'Accept': 'application/json, text/plain, */*',
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({data})
-            //     })
-            //     .then(res=>res.json())
-            //     .then(res => console.log(`response from Post on front: `, res));
-            // };
             return () => {
-                console.log("calling cleanup")
+                console.log("calling cleanup");
+                
             }
     }, [])
 

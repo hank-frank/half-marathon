@@ -11,10 +11,10 @@ function Header() {
                         <h4 className="header-title">Half Marathon tracker</h4>
                     </div>
                 </div>
-                <div className="pin-right">
-                    <Link to='/main'><span className="header-link">Main</span></Link>
-                    <Link to='/login'><span className="header-link">Login</span></Link>
-                </div>
+            </div>
+            <div className="pin-right">
+                <Link to='/main'><span className="header-link">Main</span></Link>
+                <Link to='/login'><span className="header-link">Login</span></Link>
             </div>
         </>
     )
