@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import EachWeek from './eachWeek.jsx';
 import Now from './Now.jsx';
+import Grid from './Grid.jsx';
 
-let novice2 = require('../../training/novice2-front.json');
+let novice2 = require('../../../training/novice2-front.json');
 let mockData = {
     "_id": "test Id",
     "name": "Thomas Buttcheeks",
@@ -15,7 +16,6 @@ function Main() {
     const [currentWeek, setCurrentWeek] = useState(1);
     const [viewWeek, setViewWeek] = useState(1);
     const [trainingInfo, setTrainingInfo] = useState(mockData);
-    const [trainingInfo2, setTrainingInfo2] = useState(mockData);
     const [milesProgress, setMilesProgress] = useState(0);
     const [runsProgress, setRunsProgress] = useState(0);
 
@@ -27,7 +27,6 @@ function Main() {
                 return response.json();
             })
             .then((data) => {
-                // setTrainingInfo2(data);
                 setTrainingInfo(data);
                 console.log("info from fetch in useEffect: ", data);
             })
@@ -140,6 +139,9 @@ function Main() {
                 trainingInfo = { trainingInfo.schedule }
                 week = { viewWeek }
                 checkToggle = { checkToggle }
+            />
+            <Grid 
+                trainingInfo = { trainingInfo.schedule }
             />
         </>
     )

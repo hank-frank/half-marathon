@@ -1,5 +1,4 @@
 const express = require('express');
-const axios = require('axios');
 const morgan = require("morgan");
 const bodyParser = require('body-parser');
 
@@ -25,14 +24,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use(morgan("dev"));
+app.use(morgan("dev"));
 app.use(express.static('dist'));
 
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const url = 'mongodb://localhost:27017';
 const dbName = 'half-marathon';
-// Create a new MongoClient
+
 const client = new MongoClient(url, { useUnifiedTopology: true });
 
 //inserts initial DB entry in 'schedules' w/ "name": "henry"
@@ -97,7 +96,7 @@ app.post('/cleanup', (req, res) => {
             console.log(`res in update: `, res.result);
             //res.send(200)
             
-            client.close();
+            // client.close();
         });
     });
 
