@@ -13,7 +13,7 @@ app.use(cookieParser());
 // const dotenv = require("dotenv");
 // dotenv.config();
 
-const novice2 = require('../src/training/novice2.json');
+const novice2 = require('../src/training/novice2-front.json');
 const secret = 'mysecrets';
 
 app.use((req, res, next) => {
@@ -57,8 +57,6 @@ const client = new MongoClient(url, { useUnifiedTopology: true });
 // });
 
 app.get('/checkToken', withAuth, (req, res) => {
-    // console.log(`req check auth: `, req);
-    // console.log(`res from check: `, res);
     res.status(200).send("it Worked")
 })
 
@@ -79,8 +77,7 @@ app.post('/auth', (req, res) => {
                 const userNoPassword = {
                     _id : person._id,
                     name: person.name,
-                    schedule: person.schedule,
-                    authorized: true
+                    schedule: person.schedule
                 }
                 const payload = { userName };
                 const token = jwt.sign(payload, secret, { expiresIn: '1h'});
@@ -90,8 +87,7 @@ app.post('/auth', (req, res) => {
                 const userNoPassword = {
                     _id : person._id,
                     name: person.name,
-                    schedule: person.schedule,
-                    authorized: false
+                    schedule: person.schedule
                 }
                 res.status(200).send(userNoPassword);
             }
@@ -139,6 +135,34 @@ app.post('/cleanup', withAuth, (req, res) => {
             // client.close();
         });
     });
+})
+
+app.post('/register', (req, res) => {
+    const { userName, password } = req.body;
+    let insertRes = 'nothing';
+
+    client.connect(function(err, client) {
+        assert.equal(null, err);
+        console.log("cleanup route connected correctly to server");
+
+        const db = client.db(dbName);
+        const col = db.collection('schedules');
+    
+        const newUser = {
+            name: userName,
+            password: password,
+            schedule: novice2,
+        }
+        console.log(`newUser Object: `, newUser);
+        
+        col.insertOne(newUser, (err, res) => {
+            if (err) throw err;
+            console.log('1 document inserted');
+            console.log(res.ops);
+            insertRes = res;
+        })
+    });
+    res.send(200).send({"data": insertRes});
 })
 
 module.exports = app;

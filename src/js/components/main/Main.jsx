@@ -34,10 +34,10 @@ function Main() {
                 console.log(`Error: `, err)
             })
 
-            return () => {
-                console.log("calling cleanup");
+            // return () => {
+            //     console.log("calling cleanup");
                 
-            }
+            // }
     }, [])
 
     let findWeek = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useInput } from '../../../hooks/useInput.jsx';
 
-function Login(props) {
+function Register(props) {
     const { value:userName, bind:binduserName, reset:resetuserName } = useInput('');
     const { value:password, bind:bindpassword, reset:resetpassword } = useInput('');
 
@@ -9,14 +9,10 @@ function Login(props) {
         // console.log(`from login: `);
     }, [])
 
-    const tester = () => {
-        console.log(`cookie: `, document.cookie);
-    }
-
     const handleSubmit = (evt) =>  {
         evt.preventDefault();
         // props.loginSubmit(userName, password);
-        fetch('/auth', {
+        fetch('/register', {
             method: 'post',
             headers: {
               'Accept': 'application/json, text/plain, */*',
@@ -24,19 +20,22 @@ function Login(props) {
             },
             body: JSON.stringify({ userName, password })
         })
-        .then(res=>res.json())
-        .then(res => {
-            console.log(`response from Post on front: `, res);
-            props.storeUser(res);
-        });
-        resetuserName();
-        resetpassword();
+        .then(res=>res.text())
+        .then(data => {
+            console.log(`response from Post on front: `, data);;
+        })
+        .catch((error) => {
+            console.log(`Error: `, error);
+        })
     };
 
 
     return (
         <>
-            <button onClick={ tester }>Testing form login</button>
+            {/* <button onClick={ tester }>Testing form login</button> */}
+            <div className="centered-horizontal">
+                <h5 className="register-text">Register: </h5>
+            </div>
             <form className="login-group" onSubmit={ handleSubmit }>
                 <div className="center-inputs">
                     <div className="input-label">
@@ -54,9 +53,8 @@ function Login(props) {
                     <input type="submit" value="Submit" className="login-submit"/>
                 </div>
             </form>
-
         </>
     )
 };
 
-export default Login;
+export default Register;

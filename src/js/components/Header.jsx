@@ -15,6 +15,7 @@ function Header() {
             <div className="pin-right">
                 <Link to='/main'><span className="header-link">Main</span></Link>
                 <Link to='/login'><span className="header-link">Login</span></Link>
+                <Link to='/register'><span className="header-link">Register</span></Link>
             </div>
         </>
     )
