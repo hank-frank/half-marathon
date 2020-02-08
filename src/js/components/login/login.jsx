@@ -6,24 +6,64 @@ function Login(props) {
     const { value:password, bind:bindpassword, reset:resetpassword } = useInput('');
 
     useEffect(() => {
-        console.log(`from login: `);
+        // console.log(`from login: `);
     }, [])
 
     const tester = () => {
-        console.log(`login-testing: `, props);
+        // console.log(`login-testing: `, props);
+        // fetch('/checkToken')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log(`res to check token test: `, data);
+        //     })
+        //     .catch(err => {
+        //         console.log(`error checkToken: `, err);
+        //     })
+        console.log(`cookie: `, document.cookie);
     }
 
     const handleSubmit = (evt) =>  {
         evt.preventDefault();
-        console.log(`un from login: `, userName);
-        console.log(`pass from login: `, password);
-        props.loginSubmit(userName, password);
+        // props.loginSubmit(userName, password);
+        fetch('/auth', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userName, password })
+        })
+        .then(res=>res.json())
+        .then(res => {
+            console.log(`response from Post on front: `, res);
+            // res.authorized ? setIsAuthenticated(true) : setIsAuthenticated(false);
+        });
     };
+
+    // const loginSubmit = (user, pass) => {
+    //     console.log(`user from app: `, user);
+    //     console.log(`pass from app: `, pass);
+    //     // setUsername(user);
+    //     // setPassword(pass);
+    //     fetch('/auth', {
+    //         method: 'post',
+    //         headers: {
+    //           'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({ user, pass })
+    //     })
+    //     .then(res=>res.json())
+    //     .then(res => {
+    //         console.log(`response from Post on front: `, res);
+    //         // res.authorized ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    //     });
+    // };
 
 
     return (
         <>
-            <button onClick={ tester }>Testing</button>
+            <button onClick={ tester }>Testing form login</button>
             <form className="login-group" onSubmit={ handleSubmit }>
                 <div className="center-inputs">
                     <div className="input-label">

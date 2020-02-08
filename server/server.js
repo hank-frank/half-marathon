@@ -1,15 +1,20 @@
 const express = require('express');
 const morgan = require("morgan");
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const withAuth = require('./authCheck.js');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 // const dotenv = require("dotenv");
 // dotenv.config();
 
 const novice2 = require('../src/training/novice2.json');
+const secret = 'mysecrets';
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -23,6 +28,7 @@ app.use((req, res, next) => {
     }
     next();
 });
+
 
 app.use(morgan("dev"));
 app.use(express.static('dist'));
@@ -50,9 +56,14 @@ const client = new MongoClient(url, { useUnifiedTopology: true });
 //     client.close();
 // });
 
+app.get('/checkToken', withAuth, (req, res) => {
+    // console.log(`req check auth: `, req);
+    // console.log(`res from check: `, res);
+    res.status(200).send("it Worked")
+})
+
 app.post('/auth', (req, res) => {
-    let userNameInput = req.body.user;
-    let userPass = req.body.pass;
+    const { userName, password } = req.body;
 
     client.connect(function(err, client) {
         assert.equal(null, err);
@@ -61,31 +72,34 @@ app.post('/auth', (req, res) => {
         const db = client.db(dbName);
         const col = db.collection('schedules');
 
-        col.find({name: userNameInput}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
+        col.find({name: userName}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
             if (err) throw err;
-            let user = result[0];
-            if (user.password === userPass) {
-                let userNoPass = {
-                    _id : user._id,
-                    name: user.name,
-                    schedule: user.schedule,
+            let person = result[0];
+            if (person.password === password) {
+                const userNoPassword = {
+                    _id : person._id,
+                    name: person.name,
+                    schedule: person.schedule,
                     authorized: true
                 }
-                res.status(200).send(userNoPass);
+                const payload = { userName };
+                const token = jwt.sign(payload, secret, { expiresIn: '1h'});
+                console.log(`token about to issue: `, token);
+                res.cookie('token', token, { httpOnly: false }).status(200).send(userNoPassword);
             } else {
-                let userNoPass = {
-                    _id : user._id,
-                    name: user.name,
-                    schedule: user.schedule,
+                const userNoPassword = {
+                    _id : person._id,
+                    name: person.name,
+                    schedule: person.schedule,
                     authorized: false
                 }
-                res.status(200).send(userNoPass);
+                res.status(200).send(userNoPassword);
             }
         });
     });
 })
 
-app.get('/getSchedule', (req, res) => {
+app.get('/getSchedule', withAuth, (req, res) => {
     client.connect(function(err, client) {
         assert.equal(null, err);
         console.log("Fetch schedule connected correctly to server");
@@ -102,7 +116,7 @@ app.get('/getSchedule', (req, res) => {
     })
 })
 
-app.post('/cleanup', (req, res) => {
+app.post('/cleanup', withAuth, (req, res) => {
     console.log("calling route /cleanup")
     console.log(`request in cleanup: `, req.body.trainingInfo);
     const userData = req.body.trainingInfo;

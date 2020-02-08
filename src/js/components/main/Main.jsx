@@ -96,16 +96,16 @@ function Main() {
     const tester = () => {
         console.log(`trainingInfo: `, trainingInfo);
 
-        fetch('/cleanup', {
-            method: 'post',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ trainingInfo })
-        })
-        .then(res=>res.json())
-        .then(res => console.log(`response from Post on front: `, res));
+        // fetch('/cleanup', {
+        //     method: 'post',
+        //     headers: {
+        //       'Accept': 'application/json, text/plain, */*',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ trainingInfo })
+        // })
+        // .then(res=>res.json())
+        // .then(res => console.log(`response from Post on front: `, res));
     }
 
     return (
