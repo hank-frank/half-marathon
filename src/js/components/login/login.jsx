@@ -6,7 +6,7 @@ function Login(props) {
     const { value:userName, bind:binduserName, reset:resetuserName } = useInput('');
     const { value:password, bind:bindpassword, reset:resetpassword } = useInput('');
     const [redirect, setRedirect] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("test");
+    const [errorMessage, setErrorMessage] = useState("");
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
@@ -42,7 +42,6 @@ function Login(props) {
         .catch((err) => {
             console.log(err);
         });
-
         resetuserName();
         resetpassword();
     };

@@ -117,6 +117,12 @@ body {
     font-size: 1rem;
 }
 
+#last-week:hover {
+    background-color: $light;
+    color: $dark;
+    border: 3px solid $dark;
+}
+
 #next-week {
     width: 100px;
     height: 60px;
@@ -124,6 +130,32 @@ body {
     border: 3px solid $light;
     color: $light;
     font-size: 1rem;
+}
+
+#next-week:hover {
+    background-color: $light;
+    color: $dark;
+    border: 3px solid $dark;
+}
+
+#save {
+    width: 100px;
+    height: 60px;
+    background-color: $dark;
+    border: 3px solid $light;
+    color: $light;
+    font-size: 1rem;
+}
+
+#save:hover {
+    background-color: $light;
+    color: $dark;
+    border: 3px solid $dark;
+}
+
+.save-message {
+    font-size: 1.5rem;
+    color: $red;
 }
 
 /////////////////////////////////////////////////////////////

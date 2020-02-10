@@ -5,7 +5,9 @@ import { Redirect } from 'react-router-dom';
 function Register(props) {
     const { value:userName, bind:binduserName, reset:resetuserName } = useInput('');
     const { value:password, bind:bindpassword, reset:resetpassword } = useInput('');
+    const { value:password2, bind:bindpassword2, reset:resetpassword2 } = useInput('');
     const [redirect, setRedirect] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         // console.log(`from login: `);
@@ -13,26 +15,34 @@ function Register(props) {
 
     const handleSubmit = (evt) =>  {
         evt.preventDefault();
-
-        fetch('/register', {
-            method: 'post',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userName, password })
-        })
-        .then(res=> res.json())
-        .then(data => {
-            props.storeUser(data[0]);
-            console.log(data[0]);
-            if (data[0].name === userName) {
-                setRedirect(true);
-            }
-        })
-        .catch((error) => {
-            console.log(`Error: `, error);
-        })
+        if (password === password2) {
+            fetch('/register', {
+                method: 'post',
+                headers: {
+                'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userName, password })
+            })
+            .then(res=> res.json())
+            .then(data => {
+                props.storeUser(data[0]);
+                console.log(data[0]);
+                if (data[0].name === userName) {
+                    setSuccessMessage("Register successful, redirecting you to login in 5 seconds...")
+                    setTimeout(() => {
+                        setRedirect(true);
+                    }, 5000)
+                    
+                }
+            })
+            .catch((error) => {
+                console.log(`Error: `, error);
+            })
+        } else {
+            setSuccessMessage("Passwords don't match, please try again...");
+            
+        }
     };
 
 
@@ -56,10 +66,18 @@ function Register(props) {
                             <input type="text" className="login-input" {...bindpassword} />
                         </label>
                     </div>
+                    <div className="input-label">
+                        <label>
+                            Input Password again:
+                            <input type="text" className="login-input" {...bindpassword2} />
+                        </label>
+                    </div>
                     <input type="submit" value="Submit" className="login-submit"/>
                 </div>
             </form>
-
+            <div className="centered-horizontal">
+                <h4 className="login-error">{ successMessage }</h4>
+            </div>
             { redirect ? <Redirect to="/login" /> : "" }
         </>
     )

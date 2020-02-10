@@ -117,8 +117,8 @@ app.get('/getSchedule', withAuth, (req, res) => {
     })
 })
 
-app.post('/cleanup', withAuth, (req, res) => {
-    console.log("calling route /cleanup")
+app.post('/save', withAuth, (req, res) => {
+    console.log("calling route /save")
     console.log(`request in cleanup: `, req.body.trainingInfo);
     const userData = req.body.trainingInfo;
 
@@ -132,11 +132,11 @@ app.post('/cleanup', withAuth, (req, res) => {
         let myquery = { name: userData.name };
         let newValues = { $set: {schedule: userData.schedule } };
     
-        col.updateOne(myquery, newValues, function(err, res) {
+        col.updateOne(myquery, newValues, function(err, response) {
             if (err) throw err;
             // console.log("1 document updated - just consolelog not real confirmation");
-            console.log(`res in update: `, res.result);
-            res.status(200).send(res.result);
+            console.log(`res in update: `, response.result);
+            res.status(200).send(response.result);
             // client.close();
         });
     });

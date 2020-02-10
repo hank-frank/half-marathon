@@ -18,6 +18,7 @@ function Main(props) {
     const [trainingInfo, setTrainingInfo] = useState(mockData);
     const [milesProgress, setMilesProgress] = useState(0);
     const [runsProgress, setRunsProgress] = useState(0);
+    const [saveMessage, setSaveMessage] = useState("");
 
     useEffect(() => {
         findWeek();
@@ -63,6 +64,32 @@ function Main(props) {
         }
     }
 
+    const save = () => {
+        fetch('/save', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ trainingInfo })
+        })
+        .then(res=>res.json())
+        .then((res) => {
+            if (res.nModified === 0) {
+                setSaveMessage("No changes made, no need to save");
+                setTimeout(()=>{
+                    setSaveMessage("");
+                }, 5000);
+            } else if (res.nModified === 1) {
+                setSaveMessage("Saved!");
+                setTimeout(()=>{
+                    setSaveMessage("");
+                }, 5000);
+            }
+            console.log(`response from Post on front: `, res)
+        });
+    }
+
     const checkToggle = (id) => {
         let full = trainingInfo;
         let temp = trainingInfo.schedule;
@@ -96,17 +123,7 @@ function Main(props) {
 
     const tester = () => {
         console.log(`trainingInfo: `, trainingInfo);
-
-        // fetch('/cleanup', {
-        //     method: 'post',
-        //     headers: {
-        //       'Accept': 'application/json, text/plain, */*',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ trainingInfo })
-        // })
-        // .then(res=>res.json())
-        // .then(res => console.log(`response from Post on front: `, res));
+        
     }
 
     return (
@@ -121,7 +138,11 @@ function Main(props) {
             </div>
             <div className="button-container">
                 <button id="last-week" onClick={ lastWeek }>Last</button>
+                <button id="save" onClick={ save }>Save</button>
                 <button id="next-week" onClick={ nextWeek }>Next</button>
+            </div>
+            <div className="centered-horizontal">
+                <h4 className="save-message">{ saveMessage }</h4>
             </div>
             <EachWeek 
                 trainingInfo = { trainingInfo.schedule }
