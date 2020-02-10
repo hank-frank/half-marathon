@@ -57,11 +57,11 @@ function App() {
                 </Helmet>
                 <Header />
                 <button onClick={testbutton}>TestButton from app log cookie</button>
-                <button onClick={clearCookie}>Clear COokies</button>
+                <button onClick={clearCookie}>Clear Cookies</button>
                 <main id="page-container">
-                    <Route path='/Main' component={ withAuth(Main) }/>
+                    <Route path='/Main' component={ withAuth(Main) } />
                     <Route path='/Login' render={() =>  <Login storeUser ={ storeUser } />}/>
-                    <Route path='/Register' render={() =>  <Register  />}/>
+                    <Route path='/Register' render={() =>  <Register  storeUser={ storeUser }/>}/>
                 </main>
             </Router>
         </>

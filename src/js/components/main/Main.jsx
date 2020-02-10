@@ -11,7 +11,7 @@ let mockData = {
     "schedule": novice2
 }
 
-function Main() {
+function Main(props) {
     const [startDate, setStartDate] = useState(new Date('January 01, 2020 00:01:00'));
     const [currentWeek, setCurrentWeek] = useState(1);
     const [viewWeek, setViewWeek] = useState(1);
@@ -38,6 +38,7 @@ function Main() {
             //     console.log("calling cleanup");
                 
             // }
+            console.log(`user: `, props);
     }, [])
 
     let findWeek = () => {

@@ -756,3 +756,8 @@ input:checked + .slider:before {
     color: $dark;
     cursor: pointer;
 }
+
+.login-error {
+    font-size: 1rem;
+    color: $red;
+}

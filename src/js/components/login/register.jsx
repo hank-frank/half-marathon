@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useInput } from '../../../hooks/useInput.jsx';
+import { Redirect } from 'react-router-dom';
 
 function Register(props) {
     const { value:userName, bind:binduserName, reset:resetuserName } = useInput('');
     const { value:password, bind:bindpassword, reset:resetpassword } = useInput('');
+    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
         // console.log(`from login: `);
@@ -11,7 +13,7 @@ function Register(props) {
 
     const handleSubmit = (evt) =>  {
         evt.preventDefault();
-        // props.loginSubmit(userName, password);
+
         fetch('/register', {
             method: 'post',
             headers: {
@@ -20,9 +22,13 @@ function Register(props) {
             },
             body: JSON.stringify({ userName, password })
         })
-        .then(res=>res.text())
+        .then(res=> res.json())
         .then(data => {
-            console.log(`response from Post on front: `, data);;
+            props.storeUser(data[0]);
+            console.log(data[0]);
+            if (data[0].name === userName) {
+                setRedirect(true);
+            }
         })
         .catch((error) => {
             console.log(`Error: `, error);
@@ -53,6 +59,8 @@ function Register(props) {
                     <input type="submit" value="Submit" className="login-submit"/>
                 </div>
             </form>
+
+            { redirect ? <Redirect to="/login" /> : "" }
         </>
     )
 };
