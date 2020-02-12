@@ -158,6 +158,26 @@ body {
     color: $red;
 }
 
+#logout {
+    width: 100px;
+    height: 60px;
+    background-color: $dark;
+    border: 3px solid $light;
+    color: $light;
+    font-size: 1rem;
+    position: absolute;
+    top: 70px;
+    right: 10px;
+}
+
+#logout:hover {
+    background-color: $light;
+    color: $dark;
+    border: 3px solid $dark;
+}
+
+
+
 /////////////////////////////////////////////////////////////
 //////      EachWeek
 /////////////////////////////////////////////////////////////

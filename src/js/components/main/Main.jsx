@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import EachWeek from './eachWeek.jsx';
 import Now from './Now.jsx';
@@ -19,11 +20,35 @@ function Main(props) {
     const [milesProgress, setMilesProgress] = useState(0);
     const [runsProgress, setRunsProgress] = useState(0);
     const [saveMessage, setSaveMessage] = useState("");
+    const [redirect, setRedirect] = useState(false);
+    const[saveVisible, setSaveVisible] = useState(false);
 
     useEffect(() => {
         findWeek();
+        setRedirect(false);
 
-        fetch('/getSchedule')
+        // fetch('/getSchedule')
+        //     .then((response) => {
+        //         return response.json();
+        //     })
+        //     .then((data) => {
+        //         setTrainingInfo(data);
+        //         console.log("info from fetch in useEffect: ", data);
+        //     })
+        //     .catch((err) => {
+        //         console.log(`Error: `, err)
+        // })
+
+        let userToken = document.cookie.split(' ')[1].split("=")[1];
+
+        fetch('/getUserInfo', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userToken })
+        }) 
             .then((response) => {
                 return response.json();
             })
@@ -33,13 +58,7 @@ function Main(props) {
             })
             .catch((err) => {
                 console.log(`Error: `, err)
-            })
-
-            // return () => {
-            //     console.log("calling cleanup");
-                
-            // }
-            console.log(`user: `, props);
+        })
     }, [])
 
     let findWeek = () => {
@@ -77,13 +96,17 @@ function Main(props) {
         .then((res) => {
             if (res.nModified === 0) {
                 setSaveMessage("No changes made, no need to save");
+                setSaveVisible(true);
                 setTimeout(()=>{
                     setSaveMessage("");
+                    setSaveVisible(false);
                 }, 5000);
             } else if (res.nModified === 1) {
                 setSaveMessage("Saved!");
+                setSaveVisible(true);
                 setTimeout(()=>{
                     setSaveMessage("");
+                    setSaveVisible(false);
                 }, 5000);
             }
             console.log(`response from Post on front: `, res)
@@ -123,12 +146,45 @@ function Main(props) {
 
     const tester = () => {
         console.log(`trainingInfo: `, trainingInfo);
-        
+        // let userToken = document.cookie.split(' ')[1].split("=")[1];
+
+        // fetch('/getUserInfo', {
+        //     method: 'post',
+        //     headers: {
+        //       'Accept': 'application/json, text/plain, */*',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ userToken })
+        // }) 
+        //     .then((response) => {
+        //         return response.json();
+        //     })
+        //     .then((data) => {
+        //         // setTrainingInfo(data);
+        //         console.log("info from fetch in useEffect: ", data);
+        //     })
+        //     .catch((err) => {
+        //         console.log(`Error: `, err)
+        // })
+    }
+
+    const logout = () => {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        setRedirect(true);
+    }
+    
+    const isVisible = () => {
+        if (saveVisible) {
+            return "block"
+        } else {
+            return "none"
+        }
     }
 
     return (
         <>
-            <button onClick={ tester }>Testing</button>
+            <button onClick={ tester }>Testing Main</button>
+            <button id="logout" onClick={ logout }>Logout</button>
             <Now />
             <div className='centered-horizontal'> 
                 <h6 className="time-label">It is week: { currentWeek }</h6>
@@ -142,7 +198,7 @@ function Main(props) {
                 <button id="next-week" onClick={ nextWeek }>Next</button>
             </div>
             <div className="centered-horizontal">
-                <h4 className="save-message">{ saveMessage }</h4>
+                <h4 className="save-message" style={{display: `${isVisible()}`}}>{ saveMessage }</h4>
             </div>
             <EachWeek 
                 trainingInfo = { trainingInfo.schedule }
@@ -152,6 +208,7 @@ function Main(props) {
             <Grid 
                 trainingInfo = { trainingInfo.schedule }
             />
+            { redirect ? <Redirect to="/Login" /> : "" }
         </>
     )
 };

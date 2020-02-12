@@ -76,7 +76,6 @@ app.post('/auth', (req, res) => {
         col.find({name: userName}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
             if (err) throw err;
             if (result.length > 0) {
-                console.log(`person: `, result);
                 let person = result[0];
                 if (person.password === password) {
                     const userNoPassword = {
@@ -86,7 +85,6 @@ app.post('/auth', (req, res) => {
                     }
                     const payload = { userName };
                     const token = jwt.sign(payload, secret, { expiresIn: '1h'});
-                    console.log(`token about to issue: `, token);
                     res.cookie('token', token, { httpOnly: false }).status(200).send(userNoPassword);
                 } else {
                     //sending back username, could be problem for redirecting validation on front?
@@ -110,6 +108,27 @@ app.get('/getSchedule', withAuth, (req, res) => {
 
         //find specific one currently hard coded to find my name     can eventually be used to search by username
         col.find({name: 'henry'}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
+            if (err) throw err;
+            console.log(`result of find: `, result);
+            res.status(200).send(result[0]);
+        });
+    })
+})
+
+app.post('/getUserInfo', (req, res) => {
+    let token = req.body.userToken;
+    var decoded = jwt.verify(token, secret);
+    const user = decoded.userName;
+
+    client.connect(function(err, client) {
+        assert.equal(null, err);
+        console.log("Fetch schedule connected correctly to server");
+
+        const db = client.db(dbName);
+        const col = db.collection('schedules');
+
+       // find specific one currently hard coded to find my name     can eventually be used to search by username
+        col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
             if (err) throw err;
             console.log(`result of find: `, result);
             res.status(200).send(result[0]);
