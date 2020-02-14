@@ -10,11 +10,12 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-// const dotenv = require("dotenv");
-// dotenv.config();
+const dotenv = require("dotenv");
+dotenv.config();
 
 const novice2 = require('../src/training/novice2-front.json');
-const secret = 'mysecrets';
+// const secret = 'mysecrets';
+const secret = process.env.JWT_SECRET;
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -88,7 +89,7 @@ app.post('/auth', (req, res) => {
                     res.cookie('token', token, { httpOnly: false }).status(200).send(userNoPassword);
                 } else {
                     //sending back username, could be problem for redirecting validation on front?
-                    res.status(401).send({name: userName});
+                    res.status(401).send({errorMessage: "password incorrect"});
                 }
             } else {
                 console.log(`invalid search no result`);
@@ -98,22 +99,22 @@ app.post('/auth', (req, res) => {
     });
 })
 
-app.get('/getSchedule', withAuth, (req, res) => {
-    client.connect(function(err, client) {
-        assert.equal(null, err);
-        console.log("Fetch schedule connected correctly to server");
+// app.get('/getSchedule', withAuth, (req, res) => {
+//     client.connect(function(err, client) {
+//         assert.equal(null, err);
+//         console.log("Fetch schedule connected correctly to server");
 
-        const db = client.db(dbName);
-        const col = db.collection('schedules');
+//         const db = client.db(dbName);
+//         const col = db.collection('schedules');
 
-        //find specific one currently hard coded to find my name     can eventually be used to search by username
-        col.find({name: 'henry'}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
-            if (err) throw err;
-            console.log(`result of find: `, result);
-            res.status(200).send(result[0]);
-        });
-    })
-})
+//         //find specific one currently hard coded to find my name     can eventually be used to search by username
+//         col.find({name: 'henry'}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
+//             if (err) throw err;
+//             console.log(`result of find: `, result);
+//             res.status(200).send(result[0]);
+//         });
+//     })
+// })
 
 app.post('/getUserInfo', (req, res) => {
     let token = req.body.userToken;
@@ -122,28 +123,24 @@ app.post('/getUserInfo', (req, res) => {
 
     client.connect(function(err, client) {
         assert.equal(null, err);
-        console.log("Fetch schedule connected correctly to server");
+        console.log("/getUserInfo connected correctly to server");
 
         const db = client.db(dbName);
         const col = db.collection('schedules');
 
-       // find specific one currently hard coded to find my name     can eventually be used to search by username
         col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
             if (err) throw err;
-            console.log(`result of find: `, result);
             res.status(200).send(result[0]);
         });
     })
 })
 
 app.post('/save', withAuth, (req, res) => {
-    console.log("calling route /save")
-    console.log(`request in cleanup: `, req.body.trainingInfo);
     const userData = req.body.trainingInfo;
 
     client.connect(function(err, client) {
         assert.equal(null, err);
-        console.log("cleanup route connected correctly to server");
+        console.log("/save route connected correctly to server");
 
         const db = client.db(dbName);
         const col = db.collection('schedules');
@@ -153,10 +150,8 @@ app.post('/save', withAuth, (req, res) => {
     
         col.updateOne(myquery, newValues, function(err, response) {
             if (err) throw err;
-            // console.log("1 document updated - just consolelog not real confirmation");
-            console.log(`res in update: `, response.result);
+            console.log(`res to update attempt: `, response.result);
             res.status(200).send(response.result);
-            // client.close();
         });
     });
 })
@@ -181,7 +176,7 @@ app.post('/register', (req, res) => {
             col.insertOne(newUser, (err, response) => {
                 if (err) throw err;
                 console.log('1 document inserted');
-                console.log(`res.ops: `, response.ops);
+                console.log(`res.ops status of insertion: `, response.ops);
                 res.status(200).send(response.ops);
             })
         });

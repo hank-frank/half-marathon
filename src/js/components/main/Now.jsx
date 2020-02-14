@@ -10,6 +10,7 @@ function Now() {
 
     let tick = () => {
         let date = new Date();
+        let str = date.toLocaleDateString();
         setCurrentDate(date);
         setCurrentDateString(date.toString());
     }

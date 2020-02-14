@@ -73,7 +73,7 @@ function Login(props) {
                     <div className="input-label">
                         <label>
                             Input Password:
-                            <input type="text" className="login-input" {...bindpassword} />
+                            <input type="password" className="login-input" {...bindpassword} />
                         </label>
                     </div>
                     <input type="submit" value="Submit" className="login-submit"/>

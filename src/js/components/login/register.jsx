@@ -41,7 +41,7 @@ function Register(props) {
             })
         } else {
             setSuccessMessage("Passwords don't match, please try again...");
-            
+
         }
     };
 
@@ -63,13 +63,13 @@ function Register(props) {
                     <div className="input-label">
                         <label>
                             Input Password:
-                            <input type="text" className="login-input" {...bindpassword} />
+                            <input type="password" className="login-input" {...bindpassword} />
                         </label>
                     </div>
                     <div className="input-label">
                         <label>
                             Input Password again:
-                            <input type="text" className="login-input" {...bindpassword2} />
+                            <input type="password" className="login-input" {...bindpassword2} />
                         </label>
                     </div>
                     <input type="submit" value="Submit" className="login-submit"/>
