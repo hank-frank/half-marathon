@@ -14,6 +14,7 @@ let mockData = {
 
 function Main(props) {
     const [startDate, setStartDate] = useState(new Date('January 01, 2020 00:01:00'));
+    const [stDt, setStDt] = useState(new Date(2025, 1, 1, 1));
     const [currentWeek, setCurrentWeek] = useState(1);
     const [viewWeek, setViewWeek] = useState(1);
     const [trainingInfo, setTrainingInfo] = useState(mockData);
@@ -21,23 +22,15 @@ function Main(props) {
     const [runsProgress, setRunsProgress] = useState(0);
     const [saveMessage, setSaveMessage] = useState("");
     const [redirect, setRedirect] = useState(false);
+    const [startRedirect, setStartRedirect] = useState(false);
     const[saveVisible, setSaveVisible] = useState(false);
+    const [started, setStarted] = useState(true);
+
+
 
     useEffect(() => {
-        findWeek();
         setRedirect(false);
-
-        // fetch('/getSchedule')
-        //     .then((response) => {
-        //         return response.json();
-        //     })
-        //     .then((data) => {
-        //         setTrainingInfo(data);
-        //         console.log("info from fetch in useEffect: ", data);
-        //     })
-        //     .catch((err) => {
-        //         console.log(`Error: `, err)
-        // })
+        setStartRedirect(false);
 
         let userToken = document.cookie.split(' ')[1].split("=")[1];
 
@@ -54,20 +47,36 @@ function Main(props) {
             })
             .then((data) => {
                 setTrainingInfo(data);
-                console.log("info from fetch in useEffect: ", data);
+                const {startYear, startMonth, startDay} = data;
+                let userStart = new Date(startYear, startMonth, startDay);
+                if (typeof userStart == "object") {
+                    setStDt(userStart);
+                }
             })
             .catch((err) => {
                 console.log(`Error: `, err)
         })
+        
     }, [])
+
+    useEffect(() => {
+        findWeek();
+    }, [stDt]);
 
     let findWeek = () => {
         let now = new Date();
-        var diff = (now - startDate) / 1000;
+        let diff = (now - stDt) / 1000;
         diff /= (60 * 60 * 24 * 7);
-        let weekAfterStart = Math.abs(Math.round(diff));
-        setCurrentWeek(weekAfterStart);
-        setViewWeek(weekAfterStart);
+        if (diff <= 0) {
+            setCurrentWeek(1);
+            setViewWeek(1);
+            setStarted(false);
+        } else {
+            let weekAfterStart = Math.abs(Math.round(diff));
+            setCurrentWeek(weekAfterStart);
+            setViewWeek(weekAfterStart);
+            setStarted(true);
+        }
     };
 
     const lastWeek = () => {
@@ -109,7 +118,6 @@ function Main(props) {
                     setSaveVisible(false);
                 }, 5000);
             }
-            console.log(`response from Post on front: `, res)
         });
     }
 
@@ -145,33 +153,37 @@ function Main(props) {
     };
 
     const tester = () => {
-        console.log(`trainingInfo: `, trainingInfo);
-        // let userToken = document.cookie.split(' ')[1].split("=")[1];
-
-        // fetch('/getUserInfo', {
-        //     method: 'post',
-        //     headers: {
-        //       'Accept': 'application/json, text/plain, */*',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ userToken })
-        // }) 
-        //     .then((response) => {
-        //         return response.json();
-        //     })
-        //     .then((data) => {
-        //         // setTrainingInfo(data);
-        //         console.log("info from fetch in useEffect: ", data);
-        //     })
-        //     .catch((err) => {
-        //         console.log(`Error: `, err)
-        // })
+        console.log(`new start: `, typeof stDt);
+        console.log( `old start: `, startDate);
     }
 
     const logout = () => {
-        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        setRedirect(true);
+        fetch('/save', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ trainingInfo })
+        })
+        .then(res=>res.json())
+        .then((res) => {
+            if (res.nModified === 0) {
+                document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                setRedirect(true);
+            } else if (res.nModified === 1) {
+                setSaveMessage("Saved!");
+                setSaveVisible(true);
+                document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                setRedirect(true);
+            }
+            console.log(`response from Post on front: `, res)
+        });
     }
+
+    const newStartDate = () => {
+        setStartRedirect(true);
+    };
     
     const isVisible = () => {
         if (saveVisible) {
@@ -185,13 +197,13 @@ function Main(props) {
         <>
             <button onClick={ tester }>Testing Main</button>
             <button id="logout" onClick={ logout }>Logout</button>
-            <Now />
-            <div className='centered-horizontal'> 
-                <h6 className="time-label">It is week: { currentWeek }</h6>
-            </div>
-            <div className='centered-horizontal'> 
-                <h6 className="time-label">Currently viewing week: { viewWeek }</h6>
-            </div>
+            <button id="new-start" onClick={ newStartDate }>Set New Start Date</button>
+            <Now 
+                start = { startDate }
+                strt = { stDt }
+                currentWeek = { currentWeek }
+                viewWeek = { viewWeek }
+            />
             <div className="button-container">
                 <button id="last-week" onClick={ lastWeek }>Last</button>
                 <button id="save" onClick={ save }>Save</button>
@@ -209,6 +221,7 @@ function Main(props) {
                 trainingInfo = { trainingInfo.schedule }
             />
             { redirect ? <Redirect to="/Login" /> : "" }
+            { startRedirect ? <Redirect to="/NewStart" /> : ""};
         </>
     )
 };

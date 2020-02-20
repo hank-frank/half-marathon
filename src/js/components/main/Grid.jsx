@@ -17,6 +17,9 @@ function Grid(props) {
 
     return (
         <>
+        <div className="centered-horizontal">
+            <h6 className="grid-label">Full schedule grid:</h6>
+        </div>
         <div className="grid-container">
             <div className="row1">
                 <div id="week-1-1" style={{backgroundColor: renderColor(sched[0].runs[0].complete)}}></div>

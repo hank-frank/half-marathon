@@ -67,7 +67,7 @@ function EachWeek(props) {
                 </div>
             </div>
         </div>
-        <button onClick={ testing }>each week Testing</button>
+        {/* <button onClick={ testing }>each week Testing</button> */}
         </>
     )
 };

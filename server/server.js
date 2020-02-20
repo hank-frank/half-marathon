@@ -14,6 +14,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const novice2 = require('../src/training/novice2-front.json');
+const novice1 = require('../src/training/novice1.json');
+const intermediate1 = require('../src/training/intermediate1.json');
 // const secret = 'mysecrets';
 const secret = process.env.JWT_SECRET;
 
@@ -63,6 +65,7 @@ app.get('/checkToken', withAuth, (req, res) => {
 
 app.post('/auth', (req, res) => {
     const { userName, password } = req.body;
+    console.log(userName, password);
     if (userName === '' ) {
         res.status(401);
     }
@@ -128,7 +131,7 @@ app.post('/getUserInfo', (req, res) => {
         const db = client.db(dbName);
         const col = db.collection('schedules');
 
-        col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
+        col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1, startYear: 1, startMonth: 1, startDay: 1}}).toArray(function(err, result) {
             if (err) throw err;
             res.status(200).send(result[0]);
         });
@@ -150,14 +153,56 @@ app.post('/save', withAuth, (req, res) => {
     
         col.updateOne(myquery, newValues, function(err, response) {
             if (err) throw err;
-            console.log(`res to update attempt: `, response.result);
+            // console.log(`res to update attempt: `, response.result);
+            res.status(200).send(response.result);
+        });
+    });
+})
+
+app.post('/newStart', withAuth, (req, res) => {
+    const { userToken, year, month, day } = req.body;
+    var decoded = jwt.verify(userToken, secret);
+    const user = decoded.userName;
+    console.log(`month: `, month);
+
+    client.connect(function(err, client) {
+        assert.equal(null, err);
+        console.log("/newStart route connected correctly to server");
+
+        const db = client.db(dbName);
+        const col = db.collection('schedules');
+
+        let myquery = { name: user };
+        let newValues = { $set: {
+            startYear: year, 
+            startMonth: month, 
+            startDay: day
+        } };
+    
+        col.updateOne(myquery, newValues, function(err, response) {
+            if (err) throw err;
             res.status(200).send(response.result);
         });
     });
 })
 
 app.post('/register', (req, res) => {
-    const { userName, password } = req.body;
+    const { userName, password, trainingPlan, year, month, day } = req.body;
+    let plan;
+    switch(trainingPlan) {
+        case "novice1":
+            plan = novice1;
+            break;
+        case "novice1":
+            plan = novice2; 
+            break;
+        case "intermediate1":
+            plan = intermediate1;
+            break;
+        default:
+            plan = novice2;
+    };
+
     if (userName === '' || password === '') {
         res.status(401);
     } else {
@@ -170,13 +215,16 @@ app.post('/register', (req, res) => {
             const newUser = {
                 name: userName,
                 password: password,
-                schedule: novice2,
+                schedule: plan,
+                startYear: year, 
+                startMonth: month, 
+                startDay: day
             };
 
             col.insertOne(newUser, (err, response) => {
                 if (err) throw err;
                 console.log('1 document inserted');
-                console.log(`res.ops status of insertion: `, response.ops);
+                // console.log(`res.ops status of insertion: `, response.ops);
                 res.status(200).send(response.ops);
             })
         });

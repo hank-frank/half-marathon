@@ -61,7 +61,7 @@ function Login(props) {
 
     return (
         <>
-            <button onClick={ tester }>Testing form login</button>
+            {/* <button onClick={ tester }>Testing form login</button> */}
             <form className="login-group" onSubmit={ handleSubmit }>
                 <div className="center-inputs">
                     <div className="input-label">

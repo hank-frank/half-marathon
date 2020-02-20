@@ -1,21 +1,29 @@
-$light: #F4F6F6;
+$light: #EFEAE8;
 $red-light: #FF9C91;
 $red: #CD3F3E;
 $dark: #1C2938;
 $green: #8ECC69;
 $dkgreen: #78B74F;
 
-$tiny: 380px;
-$wrap-break: 768px;
+$tiny: 550px;
+$mobile: 768px;
+$med: 1050px;
+
 
 @mixin mobile {
-    @media (max-width: $wrap-break) {
+    @media (max-width: $mobile) {
         @content;
     }
 }
 
 @mixin tiny {
     @media (max-width: $tiny) {
+        @content;
+    }
+}
+
+@mixin med {
+    @media (max-width: $med) {
         @content;
     }
 }
@@ -96,10 +104,26 @@ body {
     margin: 1vh 0;
 }
 
+.week-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    @include mobile {
+        flex-direction: column;
+    }
+}
+
+.week-wrapper {
+    @include mobile {
+        @include horizontal-center;
+    }
+}
+
 .time-label {
     font-size: 1.5rem;
     color: $dark;
     margin: 1vh 0;
+    align-self: center
 }
 
 .button-container {
@@ -176,7 +200,53 @@ body {
     border: 3px solid $dark;
 }
 
+#new-start {
+    width: 100px;
+    height: 60px;
+    background-color: $dark;
+    border: 3px solid $light;
+    color: $light;
+    font-size: 1rem;
+    position: absolute;
+    top: 130px;
+    right: 10px;
+}
 
+#new-start:hover {
+    background-color: $light;
+    color: $dark;
+    border: 3px solid $dark;
+}
+
+/////////////////////////////////////////////////////////////
+//////      Now
+/////////////////////////////////////////////////////////////
+
+.top-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    @include med {
+        flex-direction: column;
+    }
+}
+
+.top-bar {
+    width: 90vw;
+    margin: auto;
+    margin-right: 300px;
+    @include mobile {
+        @include horizontal-center;
+    }
+}
+
+.time-label {
+    font-size: .8rem;
+    margin: 1vh 0;
+    @include mobile {
+        margin: 0;
+    }
+}
 
 /////////////////////////////////////////////////////////////
 //////      EachWeek
@@ -348,6 +418,12 @@ input:checked + .slider:before {
 /////////////////////////////////////////////////////////////////
 //////////// GRID
 //////////////////////////////////////////////////////////////////@extend
+
+.grid-label {
+    font-size: .8rem;
+    margin: 1vh 0;
+    color: $dark;
+}
 
 .grid-square {
     color: $red-light;
@@ -758,10 +834,31 @@ input:checked + .slider:before {
 
 .row1 {
     display: grid;
-    grid-template-rows: 40px 40px 40px 40px;
-    grid-row-gap: 5px;
-    grid-template-columns: 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px;
-    grid-column-gap: 5px;   
+    grid-template-rows: 65px 65px 65px 65px;
+    grid-row-gap: 8px;
+    grid-template-columns: 65px 65px 65px 65px 65px 65px 65px 65px 65px 65px 65px;
+    grid-column-gap: 8px;
+
+    @include med {
+        grid-template-rows: 46px 46px 46px 46px;
+        grid-row-gap: 5px;
+        grid-template-columns: 46px 46px 46px 46px 46px 46px 46px 46px 46px 46px 46px 46px;
+        grid-column-gap: 5px;
+    }
+
+    @include mobile {
+        grid-template-rows: 32px 32px 32px 32px;
+        grid-row-gap: 3px;
+        grid-template-columns: 32px 32px 32px 32px 32px 32px 32px 32px 32px 32px 32px 32px;
+        grid-column-gap: 3px; 
+    }
+
+    @include tiny {
+        grid-template-rows: 25px 25px 25px 25px;
+        grid-row-gap: 2px;
+        grid-template-columns: 25px 25px 25px 25px 25px 25px 25px 25px 25px 25px 25px 25px;
+        grid-column-gap: 2px;
+    }
 }
 
 ////////////////////////////////////////////////////////////////

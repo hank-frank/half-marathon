@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from 'react';
 
-function Now() {
+function Now(props) {
     let [currentDate, setCurrentDate] = useState();
     let [currentDateString, setCurrentDateString] = useState();
 
     useEffect(() => {
         setInterval(() => tick(), 1000);
+        console.log(typeof props.strt )
     }, [])
 
     let tick = () => {
         let date = new Date();
-        let str = date.toLocaleDateString();
         setCurrentDate(date);
         setCurrentDateString(date.toString());
+        
     }
 
     return (
         <>
-            <div className='centered-horizontal'> 
-                <h6 className="time-label">The current date and time is:</h6>
-            </div>
-            <div className='centered-horizontal'> 
-                <h6 className="current-time">{ currentDateString }</h6>
+            <div className="top-bar">
+                <div className="top-info">
+                    <h6 className="time-label">Start date: { props.start.toDateString() }</h6>
+                    <h6 className="time-label">New Start date: { props.strt.toDateString() }</h6>
+                    <h6 className="time-label">Today: { currentDateString }</h6>
+                    <h6 className="time-label">It is week: { props.currentWeek }</h6>
+                    <h6 className="time-label">Viewing week: { props.viewWeek }</h6>
+                </div>
             </div>
         </>
     )
