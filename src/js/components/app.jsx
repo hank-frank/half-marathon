@@ -9,17 +9,17 @@ import withAuth from './login/withAuth.jsx';
 import Register from './login/register.jsx';
 import NewStart from './main/newStart.jsx';
 
+import '../../css/custom.scss';
+
 function App() {
     const [helmetTitle, setHelmetTitle] = useState("Half Marathon");
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        // console.log(`calling useeffect`)
         setHelmetTitle(handleTitle(window.location.hash))
     }, []);
 
     const storeUser = (data) => {
-        console.log(`from storeuser: `, data);
         setUser(data);
     };
 
@@ -42,14 +42,6 @@ function App() {
         };
     }
 
-    const testbutton = () => {
-        console.log(`cookie: `, document.cookie)
-    }
-
-    const clearCookie = () => {
-        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-    }
-
     return (
         <>
             <Router>
@@ -57,8 +49,6 @@ function App() {
                     <title>{ helmetTitle }</title>
                 </Helmet>
                 <Header />
-                {/* <button onClick={testbutton}>TestButton from app log cookie</button>
-                <button onClick={clearCookie}>Clear Cookies</button> */}
                 <main id="page-container">
                     <Route path='/Main' component={ withAuth(Main) } />
                     <Route path='/Login' render={() =>  <Login storeUser ={ storeUser } />}/>

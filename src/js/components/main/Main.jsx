@@ -25,6 +25,7 @@ function Main(props) {
     const [startRedirect, setStartRedirect] = useState(false);
     const[saveVisible, setSaveVisible] = useState(false);
     const [started, setStarted] = useState(true);
+    const [color2, setColor2] = useState(false);
 
 
 
@@ -47,6 +48,9 @@ function Main(props) {
             })
             .then((data) => {
                 setTrainingInfo(data);
+                if (data.colorScheme === 1) {
+                    setColor2(true);
+                }
                 const {startYear, startMonth, startDay} = data;
                 let userStart = new Date(startYear, startMonth, startDay);
                 if (typeof userStart == "object") {
@@ -99,7 +103,7 @@ function Main(props) {
               'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ trainingInfo })
+            body: JSON.stringify({ trainingInfo, color2 })
         })
         .then(res=>res.json())
         .then((res) => {
@@ -152,11 +156,6 @@ function Main(props) {
         setTrainingInfo(full);
     };
 
-    const tester = () => {
-        console.log(`new start: `, typeof stDt);
-        console.log( `old start: `, startDate);
-    }
-
     const logout = () => {
         fetch('/save', {
             method: 'post',
@@ -164,7 +163,7 @@ function Main(props) {
               'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ trainingInfo })
+            body: JSON.stringify({ trainingInfo, color2 })
         })
         .then(res=>res.json())
         .then((res) => {
@@ -193,9 +192,24 @@ function Main(props) {
         }
     }
 
+    const gridWeek = (week) => {
+        setViewWeek(week);
+    };
+
+    const colorSwap = () => {
+        setColor2(!color2);
+        console.log(`color2: `, color2);
+    };
+
     return (
         <>
-            <button onClick={ tester }>Testing Main</button>
+            <div className="color-switch-spacer">
+                <label className="color-toggle-switch">
+                    <input type="checkbox"  onChange={ colorSwap } checked={ color2 }/>
+                    <span className="color-slider color-round"></span>
+                </label>
+                <h4>Color Scheme toggle</h4>
+            </div>
             <button id="logout" onClick={ logout }>Logout</button>
             <button id="new-start" onClick={ newStartDate }>Set New Start Date</button>
             <Now 
@@ -216,9 +230,12 @@ function Main(props) {
                 trainingInfo = { trainingInfo.schedule }
                 week = { viewWeek }
                 checkToggle = { checkToggle }
+                color2={ color2 }
             />
             <Grid 
                 trainingInfo = { trainingInfo.schedule }
+                gridWeek = { gridWeek }
+                color2={ color2 }
             />
             { redirect ? <Redirect to="/Login" /> : "" }
             { startRedirect ? <Redirect to="/NewStart" /> : ""};

@@ -10,9 +10,13 @@ function EachWeek(props) {
         setSchedule(props.trainingInfo)        
     }, [props]);
 
-    const testing = () => {
-        console.log(schedule);
-    }
+    const add2 = () => {
+        if (props.color2) {
+            return "2"
+        } else {
+            return "";
+        }
+    };
 
     return (
         <>
@@ -22,7 +26,7 @@ function EachWeek(props) {
                     schedule[thisWeek-1]?.runs.map((run) => {
                         if (run.complete == true) {
                             return (
-                                <div className="run-border-complete" key={ run.runId }>
+                                <div className={`run-border-complete${add2()}`} key={ run.runId }>
                                     <div className='center-run-text'>
                                         <div className="switch-spacer">
                                             <label className="toggle-switch">
@@ -36,7 +40,7 @@ function EachWeek(props) {
                             )
                         } else if (run.complete == false) {
                             return (
-                                <div className="run-border-not" key={ run.runId }>
+                                <div className={`run-border-not${add2()}`} key={ run.runId }>
                                     <div className='center-run-text'>
                                         <div className="switch-spacer">
                                             <label className="toggle-switch">
@@ -54,15 +58,15 @@ function EachWeek(props) {
             </div>
         </div>
         <div className="progress-wrapper">
-            <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "bar-done" : "runs-bar" }>
-                <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "progress-done" : "runs-progress" } style={{width: `${schedule[thisWeek-1]?.runsProgress}%`}}>
+            <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? `bar-done${add2()}` : `runs-bar${add2()}` }>
+                <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? `progress-done${add2()}` : `runs-progress${add2()}` } style={{width: `${schedule[thisWeek-1]?.runsProgress}%`}}>
                     <p className={ schedule[thisWeek-1]?.runsProgress > 15 ? "progress-text" : "no-show" }>Runs done</p>
                 </div>
             </div>
         </div>
         <div className="progress-wrapper">
-            <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "bar-done" : "runs-bar" }>
-                <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? "progress-done" : "miles-progress" } style={{width: `${schedule[thisWeek-1]?.milesProgress}%`}}>
+            <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? `bar-done${add2()}` : `runs-bar${add2()}` }>
+                <div className={ schedule[thisWeek-1]?.runsProgress === 100 ? `progress-done${add2()}` : `miles-progress${add2()}` } style={{width: `${schedule[thisWeek-1]?.milesProgress}%`}}>
                 <p className={ schedule[thisWeek-1]?.runsProgress > 15 ? "progress-text" : "no-show" }>Miles done</p>
                 </div>
             </div>

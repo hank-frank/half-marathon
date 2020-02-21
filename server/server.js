@@ -16,7 +16,7 @@ dotenv.config();
 const novice2 = require('../src/training/novice2-front.json');
 const novice1 = require('../src/training/novice1.json');
 const intermediate1 = require('../src/training/intermediate1.json');
-// const secret = 'mysecrets';
+
 const secret = process.env.JWT_SECRET;
 
 app.use((req, res, next) => {
@@ -41,23 +41,7 @@ const assert = require('assert');
 const url = 'mongodb://localhost:27017';
 const dbName = 'half-marathon';
 
-const client = new MongoClient(url, { useUnifiedTopology: true });
-
-// inserts initial DB entry in 'schedules' w/ "name": "henry"
-// client.connect(function(err) {
-//     assert.equal(null, err);
-//     console.log("Connected successfully to server");
-
-//     const db = client.db(dbName);
-        //inserts original
-//     db.collection('schedules').insertOne(novice2, function(err, r) {
-//         assert.equal(null, err);
-//         assert.equal(1, r.insertedCount);
-//         console.log(`inserting w/ id: `, novice2._id);
-//     })
-
-//     client.close();
-// });
+const client = new MongoClient(url, { useUnifiedTopology: true });  
 
 app.get('/checkToken', withAuth, (req, res) => {
     res.status(200).send("it Worked")
@@ -131,7 +115,7 @@ app.post('/getUserInfo', (req, res) => {
         const db = client.db(dbName);
         const col = db.collection('schedules');
 
-        col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1, startYear: 1, startMonth: 1, startDay: 1}}).toArray(function(err, result) {
+        col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1, startYear: 1, startMonth: 1, startDay: 1, colorScheme: 1}}).toArray(function(err, result) {
             if (err) throw err;
             res.status(200).send(result[0]);
         });
@@ -140,6 +124,13 @@ app.post('/getUserInfo', (req, res) => {
 
 app.post('/save', withAuth, (req, res) => {
     const userData = req.body.trainingInfo;
+    const color = req.body.color2;
+    console.log(color);
+    let colorNumber = 0;
+    if (color) {
+        colorNumber = 1;
+    }
+    console.log(`number: `, colorNumber);
 
     client.connect(function(err, client) {
         assert.equal(null, err);
@@ -149,7 +140,7 @@ app.post('/save', withAuth, (req, res) => {
         const col = db.collection('schedules');
 
         let myquery = { name: userData.name };
-        let newValues = { $set: {schedule: userData.schedule } };
+        let newValues = { $set: {schedule: userData.schedule, colorScheme: colorNumber } };
     
         col.updateOne(myquery, newValues, function(err, response) {
             if (err) throw err;
@@ -218,13 +209,13 @@ app.post('/register', (req, res) => {
                 schedule: plan,
                 startYear: year, 
                 startMonth: month, 
-                startDay: day
+                startDay: day,
+                colorScheme: 1
             };
 
             col.insertOne(newUser, (err, response) => {
                 if (err) throw err;
                 console.log('1 document inserted');
-                // console.log(`res.ops status of insertion: `, response.ops);
                 res.status(200).send(response.ops);
             })
         });

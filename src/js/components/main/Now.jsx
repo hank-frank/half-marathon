@@ -6,14 +6,12 @@ function Now(props) {
 
     useEffect(() => {
         setInterval(() => tick(), 1000);
-        console.log(typeof props.strt )
     }, [])
 
     let tick = () => {
         let date = new Date();
         setCurrentDate(date);
         setCurrentDateString(date.toString());
-        
     }
 
     return (
