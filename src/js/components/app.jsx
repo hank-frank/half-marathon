@@ -12,13 +12,21 @@ import NewStart from './main/newStart.jsx';
 import '../../css/custom.scss';
 
 function App() {
+    let _isMounted = false;
     const [helmetTitle, setHelmetTitle] = useState("Half Marathon");
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        setHelmetTitle(handleTitle(window.location.hash))
+        _isMounted = true;
+        if (_isMounted) {
+            setHelmetTitle(handleTitle(window.location.hash))
+        }
+        return () => {
+            _isMounted = false;
+        }
     }, []);
 
+    //is this attempting to store the user data gobally? 
     const storeUser = (data) => {
         setUser(data);
     };

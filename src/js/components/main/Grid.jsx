@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
 function Grid(props) {
+    let _isMounted = false;
     const [sched, setSched] = useState(props.trainingInfo);
 
     useEffect(() => {
-        setSched(props.trainingInfo)
+        _isMounted = true;
+        if (_isMounted){
+            setSched(props.trainingInfo)
+        }
+
+        return () => {
+            _isMounted = false;
+        }
     }, [props]);
 
     const renderColor = (complete) => {

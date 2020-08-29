@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
 function Now(props) {
+    let _isMounted = false;
     let [currentDate, setCurrentDate] = useState();
     let [currentDateString, setCurrentDateString] = useState();
 
     useEffect(() => {
-        setInterval(() => tick(), 1000);
+        _isMounted = true;
+
+        if (_isMounted) {
+            setInterval(() => tick(), 1000);
+        }
+
+        return () => {
+            _isMounted = false;
+        }
     }, [])
 
     let tick = () => {

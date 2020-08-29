@@ -36,6 +36,7 @@ import { Redirect } from 'react-router-dom';
 
 export default function withAuth(ComponentToProtect) {
     return class extends Component {
+        _isMounted = false;
         constructor() {
         super();
         this.state = {
@@ -44,10 +45,13 @@ export default function withAuth(ComponentToProtect) {
     };
     }
     componentDidMount() {
+        this._isMounted = true;
         fetch('/checkToken')
             .then(res => {
                 if (res.status === 200) {
-                    this.setState({ loading: false });
+                    if (this._isMounted) {
+                        this.setState({ loading: false });
+                    }
                 } else {
                     const error = new Error(res.error);
                     throw error;
@@ -55,9 +59,16 @@ export default function withAuth(ComponentToProtect) {
             })
             .catch(err => {
                 console.error(err);
-                this.setState({ loading: false, redirect: true });
+                if (this._isMounted){
+                    this.setState({ loading: false, redirect: true });
+                }
         });
-    }
+    };
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    };
+
     render() {
         const { loading, redirect } = this.state;
         if (loading) {

@@ -2,12 +2,21 @@ import React, { useState, useEffect } from 'react';
 
 
 function EachWeek(props) {
+    let _isMounted = false;
     const [thisWeek, setThisWeek] = useState(1);
     const [schedule, setSchedule] = useState(props.trainingInfo);
 
     useEffect(() => {
-        setThisWeek(props.week);
-        setSchedule(props.trainingInfo)        
+        _isMounted = true;
+
+        if(_isMounted) {
+            setThisWeek(props.week);
+            setSchedule(props.trainingInfo)  
+        }
+        
+        return () => {
+            _isMounted = false;
+        }
     }, [props]);
 
     const add2 = () => {

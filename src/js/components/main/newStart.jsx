@@ -3,6 +3,7 @@ import { useInput } from '../../../hooks/useInput.jsx';
 import { Redirect } from 'react-router-dom';
 
 function NewStart (props) {
+    let _isMounted = false;
     const { value:day, bind:bindDay, reset:resetDay } = useInput('');
     const [month, setMonth] = useState(1);
     const [year, setYear] = useState(2020);
@@ -10,12 +11,20 @@ function NewStart (props) {
     const [redirect, setRedirect] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     
-    const handleSubmit = (evt) =>  {
+    const handleSubmit = async (evt) =>  {
         
         evt.preventDefault();
 
-        let userToken = document.cookie.split(' ')[1].split("=")[1];
-        
+        let cookies = document.cookie.split(' ');
+        let userToken;
+        for (let cookie of cookies) {
+            cookie = cookie.split("=");
+            if (cookie[0] == 'token') {
+                userToken = cookie[1];
+            }
+        }
+        //rewrite as try/catch async/await
+        //figure out why updating new date doens't work. 
         fetch('/newStart', {
             method: 'post',
             headers: {
@@ -45,14 +54,22 @@ function NewStart (props) {
     }
 
     useEffect (() => {
-        if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7|| month == 9 || month == 11) {
-            setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]);
-        } else if (month == 3 || month == 5 || month == 8 || month == 10) {
-            setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
-        } else if (year == 2020 && month == 1) {
-            setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
-        } else if (year !== 2020 && month == 1) {
-            setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]);
+        _isMounted = true;
+
+        if (_isMounted){
+            if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7|| month == 9 || month == 11) {
+                setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]);
+            } else if (month == 3 || month == 5 || month == 8 || month == 10) {
+                setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+            } else if (year == 2020 && month == 1) {
+                setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
+            } else if (year !== 2020 && month == 1) {
+                setDates([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]);
+            }
+        }
+
+        return () => {
+            _isMounted = false;
         }
     }, [year, month]);
 
@@ -66,6 +83,8 @@ function NewStart (props) {
                             <select className="login-input" onChange={ event => setYear(event.target.value) }>
                                 <option value="2020">2020</option>
                                 <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
                             </select>
                         </label>
                     </label>

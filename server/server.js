@@ -49,7 +49,7 @@ app.get('/checkToken', withAuth, (req, res) => {
 
 app.post('/auth', (req, res) => {
     const { userName, password } = req.body;
-    console.log(userName, password);
+    console.log(`auth route:`, userName, password);
     if (userName === '' ) {
         res.status(401);
     }
@@ -86,26 +86,9 @@ app.post('/auth', (req, res) => {
     });
 })
 
-// app.get('/getSchedule', withAuth, (req, res) => {
-//     client.connect(function(err, client) {
-//         assert.equal(null, err);
-//         console.log("Fetch schedule connected correctly to server");
-
-//         const db = client.db(dbName);
-//         const col = db.collection('schedules');
-
-//         //find specific one currently hard coded to find my name     can eventually be used to search by username
-//         col.find({name: 'henry'}, { projection: {schedule: 1, name: 1, password: 1}}).toArray(function(err, result) {
-//             if (err) throw err;
-//             console.log(`result of find: `, result);
-//             res.status(200).send(result[0]);
-//         });
-//     })
-// })
-
 app.post('/getUserInfo', (req, res) => {
-    let token = req.body.userToken;
-    var decoded = jwt.verify(token, secret);
+    const token = req.body.userToken;
+    const decoded = jwt.verify(token, secret);
     const user = decoded.userName;
 
     client.connect(function(err, client) {
@@ -117,20 +100,23 @@ app.post('/getUserInfo', (req, res) => {
 
         col.find({name: user}, { projection: {schedule: 1, name: 1, password: 1, startYear: 1, startMonth: 1, startDay: 1, colorScheme: 1}}).toArray(function(err, result) {
             if (err) throw err;
+            console.log(`in the find`)
             res.status(200).send(result[0]);
         });
     })
+    // .then(() => {
+    //     console.log(`in the then`)
+    //     return client.close();
+    // })
 })
 
 app.post('/save', withAuth, (req, res) => {
     const userData = req.body.trainingInfo;
     const color = req.body.color2;
-    console.log(color);
     let colorNumber = 0;
     if (color) {
         colorNumber = 1;
     }
-    console.log(`number: `, colorNumber);
 
     client.connect(function(err, client) {
         assert.equal(null, err);
@@ -155,7 +141,7 @@ app.post('/newStart', withAuth, (req, res) => {
     var decoded = jwt.verify(userToken, secret);
     const user = decoded.userName;
     console.log(`month: `, month);
-
+    
     client.connect(function(err, client) {
         assert.equal(null, err);
         console.log("/newStart route connected correctly to server");
@@ -170,7 +156,7 @@ app.post('/newStart', withAuth, (req, res) => {
             startDay: day
         } };
     
-        col.updateOne(myquery, newValues, function(err, response) {
+        col.updateOne(myquery, newValues, (err, response) => {
             if (err) throw err;
             res.status(200).send(response.result);
         });

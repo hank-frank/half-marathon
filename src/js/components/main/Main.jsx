@@ -13,7 +13,9 @@ let mockData = {
 }
 
 function Main(props) {
-    const [startDate, setStartDate] = useState(new Date('January 01, 2020 00:01:00'));
+    let _isMounted = false;
+    const [startDate, setStartDate] = useState(new Date('June 01, 2020 00:01:00'));
+    //try to remember why I was starting to convert to a different start date formnat?
     const [stDt, setStDt] = useState(new Date(2025, 1, 1, 1));
     const [currentWeek, setCurrentWeek] = useState(1);
     const [viewWeek, setViewWeek] = useState(1);
@@ -23,53 +25,82 @@ function Main(props) {
     const [saveMessage, setSaveMessage] = useState("");
     const [redirect, setRedirect] = useState(false);
     const [startRedirect, setStartRedirect] = useState(false);
-    const[saveVisible, setSaveVisible] = useState(false);
+    const [saveVisible, setSaveVisible] = useState(false);
     const [started, setStarted] = useState(true);
     const [color2, setColor2] = useState(false);
 
 
-
+//get userDate on component load
     useEffect(() => {
-        setRedirect(false);
-        setStartRedirect(false);
+        _isMounted = true;
+        if (_isMounted){
+            setRedirect(false);
+            setStartRedirect(false);
+        }
 
-        let userToken = document.cookie.split(' ')[1].split("=")[1];
+        let cookies = document.cookie.split(' ');
+        let userToken;
+        for (let cookie of cookies) {
+            cookie = cookie.split("=");
+            if (cookie[0] == 'token') {
+                userToken = cookie[1];
+            }
+        };
 
-        fetch('/getUserInfo', {
-            method: 'post',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userToken })
-        }) 
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                setTrainingInfo(data);
-                if (data.colorScheme === 1) {
-                    setColor2(true);
-                }
-                const {startYear, startMonth, startDay} = data;
-                let userStart = new Date(startYear, startMonth, startDay);
-                if (typeof userStart == "object") {
-                    setStDt(userStart);
-                }
-            })
-            .catch((err) => {
-                console.log(`Error: `, err)
-        })
-        
-    }, [])
+        if (userToken) {
+            const getUserData = async () => {
+                try {
+                    let userData = await fetch('/getUserInfo', {
+                        method: 'post',
+                        headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userToken })
+                    });
 
+                    let jsonData = await userData.json();
+                    if (_isMounted) {
+                        setTrainingInfo(jsonData);
+
+                        if (userData.colorScheme === 1) {
+                            setColor2(true);
+                        };
+
+                        const {startYear, startMonth, startDay} = jsonData;
+                        let userStart = new Date(startYear, startMonth, startDay);
+                        if (typeof userStart == "object") {
+                            setStDt(userStart);
+                            setStartDate(userStart);
+                        };
+                    };
+
+                } catch (err) {
+                    console.log(`Error: `, err);
+                };
+            }
+            if(_isMounted) {
+                getUserData();
+            }
+        } else {
+            console.log(`Error loading user data, Token is invalid.`)
+        };
+
+        return () => {
+            _isMounted = false;
+        }
+    }, []);
+
+// find correct week on component load or if the start date is updated
     useEffect(() => {
-        findWeek();
-    }, [stDt]);
-
+        if (_isMounted){
+            findWeek();
+        }
+    }, [stDt, startDate]);
+//TODO set message to tell user that they are viewing week 12 because they are finished. 
     let findWeek = () => {
         let now = new Date();
-        let diff = (now - stDt) / 1000;
+        let diff = (now - startDate) / 1000;
         diff /= (60 * 60 * 24 * 7);
         if (diff <= 0) {
             setCurrentWeek(1);
@@ -77,8 +108,9 @@ function Main(props) {
             setStarted(false);
         } else {
             let weekAfterStart = Math.abs(Math.round(diff));
+            console.log(weekAfterStart);
             setCurrentWeek(weekAfterStart);
-            setViewWeek(weekAfterStart);
+            weekAfterStart > 12 ? setViewWeek(12) : setViewWeek(weekAfterStart);
             setStarted(true);
         }
     };
@@ -87,14 +119,14 @@ function Main(props) {
         if (viewWeek > 1) {
             setViewWeek(viewWeek-1)
         }
-    }
+    };
 
     const nextWeek = () => {
         let numberOfWeeks = trainingInfo.schedule.length;
         if (viewWeek < numberOfWeeks) {
             setViewWeek(viewWeek+1)
         }
-    }
+    };
 
     const save = () => {
         fetch('/save', {
@@ -123,7 +155,7 @@ function Main(props) {
                 }, 5000);
             }
         });
-    }
+    };
 
     const checkToggle = (id) => {
         let full = trainingInfo;
@@ -178,7 +210,7 @@ function Main(props) {
             }
             console.log(`response from Post on front: `, res)
         });
-    }
+    };
 
     const newStartDate = () => {
         setStartRedirect(true);
@@ -190,7 +222,7 @@ function Main(props) {
         } else {
             return "none"
         }
-    }
+    };
 
     const gridWeek = (week) => {
         setViewWeek(week);
@@ -198,7 +230,6 @@ function Main(props) {
 
     const colorSwap = () => {
         setColor2(!color2);
-        console.log(`color2: `, color2);
     };
 
     return (
